@@ -3,10 +3,6 @@
 echo "This will set up the correct environment to work with the tas-car..."
 echo "Please type in the root password:"
 
-[ "$(whoami)" != "root" ] && exec sudo -- "$0" "$@"
-
-DIR=$(pwd)
-
 #Add source command to bashrc
 echo "------------------------------------"
 echo "Set up ROS environment"
