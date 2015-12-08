@@ -84,15 +84,6 @@ int main(int argc, char** argv){
     waypoints.push_back(waypoint4);
 
 
-    geometry_msgs::Pose waypoint5;
-    waypoint5.position.x = 12.78;
-    waypoint5.position.y = -4.47;
-    waypoint5.position.z = 000;
-    waypoint5.orientation.x = 0.000;
-    waypoint5.orientation.y = 0.000;
-    waypoint5.orientation.z = -0.72;
-    waypoint5.orientation.w = 0.7;
-    waypoints.push_back(waypoint5);
 
 
 

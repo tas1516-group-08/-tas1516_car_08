@@ -1,0 +1,4 @@
+#!/bin/bash
+cd ~/tas/launch/config/map_server
+rosrun map_server map_saver -f test
+ 
