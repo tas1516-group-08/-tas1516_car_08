@@ -10,8 +10,8 @@ control::control()
 
     wii_communication_sub = nh_.subscribe<std_msgs::Int16MultiArray>("wii_communication",1000,&control::wiiCommunicationCallback,this);
 
-    Fp_x = 1;// need to test! default:125
-    Fp_y = 1;
+    Fp_x = 0.33;// need to test! default:125
+    Fp_y = 0.1;
 
     current_ServoMsg.x = 1500;
     current_ServoMsg.y = 1500;
