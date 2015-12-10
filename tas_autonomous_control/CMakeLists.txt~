@@ -103,7 +103,7 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-add_executable(tas_autonomous_control_node src/tas_autonomous_control_node.cpp src/control/control.cpp src/einparken/einparken.cpp)
+add_executable(tas_autonomous_control_node src/tas_autonomous_control_node.cpp src/control/control.cpp einparken/einparken.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
