@@ -8,7 +8,7 @@
 #include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/LaserScan.h>
-
+#include <sensor_msgs/PointCloud.h>
 
 #define PI                     3.14159265
 #define CAR_LENGTH              0.355
@@ -23,11 +23,12 @@ public:
     ros::Subscriber laser_back_sub;
 
     const float *rangesPtr;
+    
 
 private:
 
     
-    void LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
+    void LaserBackCallback(const sensor_msgs::PointCloud::ConstPtr& msg);
 
 };
 

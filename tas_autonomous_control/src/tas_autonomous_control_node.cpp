@@ -7,7 +7,6 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "autonomous_control");
 
     control autonomous_control;
-    einparken parken;
 
     geometry_msgs::Vector3 regler;
 
@@ -30,9 +29,9 @@ int main(int argc, char** argv)
             {
                 ROS_INFO("Automatic Control!");
 /*
-		regler = autonomous_control.P_Controller();
+        regler = autonomous_control.P_Controller();
                 autonomous_control.control_servo.x = regler.x;
-		autonomous_control.control_servo.y = regler.y;
+        autonomous_control.control_servo.y = regler.y;
 */
                 if(autonomous_control.cmd_linearVelocity>0)
                 {

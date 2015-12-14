@@ -21,6 +21,9 @@ public:
 
     ros::NodeHandle nh;
     ros::Subscriber laser_back_sub;
+    laser_geometry::LaserProjection projector;
+    tf::TransformListener listener;
+    ros::Publisher chatter_pub;
 
     const float *rangesPtr;
 
