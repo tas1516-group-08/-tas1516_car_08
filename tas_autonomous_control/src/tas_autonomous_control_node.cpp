@@ -7,6 +7,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "autonomous_control");
 
     control autonomous_control;
+    einparken parken;
 
     geometry_msgs::Vector3 regler;
 
@@ -18,6 +19,32 @@ int main(int argc, char** argv)
         {
             ROS_INFO("Manually Control!");
         }
+	else if (autonomous_control.control_Mode.data==2) {
+	    ROS_INFO("Parking Control!");
+	    if (parken.parking_started == false) {
+	    	parken.Start_parking();
+	    }
+	    else
+	    {
+
+		    if(parken.fahre_vorwaerts)
+		    {
+		        autonomous_control.control_servo.x = 1530;
+		    }
+		    else if(parken.fahre_rueckwaerts)
+		    {
+		        autonomous_control.control_servo.x = 1300;
+		    }
+		    else if(parken.lenke_links)
+		    {
+		        autonomous_control.control_servo.y = 1000;
+		    }
+		    else if(parken.lenke_rechts)
+		    {
+			autonomous_control.control_servo.y = 2000;
+		    }
+	    }	
+	}
         else
         {
             if(autonomous_control.control_Brake.data==1)
@@ -33,6 +60,7 @@ int main(int argc, char** argv)
                 autonomous_control.control_servo.x = regler.x;
         autonomous_control.control_servo.y = regler.y;
 */
+
                 if(autonomous_control.cmd_linearVelocity>0)
                 {
                     autonomous_control.control_servo.x = 1580;
