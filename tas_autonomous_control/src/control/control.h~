@@ -34,12 +34,14 @@ public:
     double odom_angularVelocity;
     double odom_steeringAngle;
 
-    int Fp;
+    int Fp_x, Fp_y;
 
     geometry_msgs::Vector3 current_ServoMsg;
     geometry_msgs::Vector3 previous_ServoMsg;
 
     geometry_msgs::Vector3 control_servo;
+
+    void updateParam(); // check for updates of the control parameters
 
     /* Controller for speed and steering angle */
     geometry_msgs::Vector3 P_Controller();

@@ -19,6 +19,9 @@ control::control()
     previous_ServoMsg.x = 1500;
     previous_ServoMsg.y = 1500;
 
+    nh_.setParam("/Fp_x", Fp_x);
+    nh_.setParam("/Fp_y", Fp_y);
+
 }
 // We can subscribe to the odom here and get some feedback signals so later we can build our controllers
 void control::odomCallback(const geometry_msgs::Twist::ConstPtr& msg)
@@ -94,4 +97,9 @@ geometry_msgs::Vector3 control::P_Controller()
     previous_ServoMsg = current_ServoMsg;
 
     return current_ServoMsg;
+}
+
+void control::updateParam() {
+    nh_.getParam("/Fp_x", Fp_x);
+    nh_.getParam("/Fp_y", Fp_y);
 }

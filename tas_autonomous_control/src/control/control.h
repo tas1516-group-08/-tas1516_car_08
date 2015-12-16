@@ -41,6 +41,8 @@ public:
 
     geometry_msgs::Vector3 control_servo;
 
+    void updateParam(); // check for updates (of the control parameters)
+
     /* Controller for speed and steering angle */
     geometry_msgs::Vector3 P_Controller();
 
