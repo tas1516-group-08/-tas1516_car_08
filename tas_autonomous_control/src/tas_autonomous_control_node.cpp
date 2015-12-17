@@ -1,9 +1,11 @@
 #include "control/control.h"
-#include "einparken/einparken.h"
 #include <geometry_msgs/Vector3.h>
 
 int main(int argc, char** argv)
 {
+
+
+
     ros::init(argc, argv, "autonomous_control");
 
     control autonomous_control;
@@ -12,6 +14,9 @@ int main(int argc, char** argv)
 
     ros::Rate loop_rate(50);
 
+    float epsilon = 1e-4;
+
+
     while(ros::ok())
     {
         if(autonomous_control.control_Mode.data==0)
@@ -19,23 +24,22 @@ int main(int argc, char** argv)
             ROS_INFO("Manually Control!");
         }
 	else if (autonomous_control.control_Mode.data==2) {
-	    ROS_INFO("Parking Control!");
-	    
-		if(autonomous_control.cmd_linearVelocity>0)
-                {
-                    autonomous_control.control_servo.x = 1535;
+	    //ROS_INFO("Parking Control!");
+
+
+		if(autonomous_control.cmd_linearVelocity>epsilon){
+                    autonomous_control.control_servo.x = 1550;
                 }
-                else if(autonomous_control.cmd_linearVelocity<0)
-                {
+                else if(autonomous_control.cmd_linearVelocity< (epsilon*(-1))){
                     autonomous_control.control_servo.x = 1300;
                 }
-                else
-                {
+                else{
                     autonomous_control.control_servo.x = 1500;
                 }
 
                 autonomous_control.control_servo.y = autonomous_control.cmd_steeringAngle;
 		
+            autonomous_control.control_servo_pub_.publish(autonomous_control.control_servo);
 	}
         else
         {

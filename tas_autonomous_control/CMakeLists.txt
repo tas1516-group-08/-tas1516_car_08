@@ -105,9 +105,8 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-add_executable(tas_autonomous_control_node src/tas_autonomous_control_node.cpp src/control/control.cpp src/einparken/einparken.cpp)
-add_executable(LaserBack src/einparken/LaserScanToPointCloud.cpp)
-add_executable(Parking src/parking.cpp)
+add_executable(tas_autonomous_control_node src/tas_autonomous_control_node.cpp src/control/control.cpp)
+add_executable(parking_node src/parking_control.cpp src/parking/parking.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -117,11 +116,8 @@ add_executable(Parking src/parking.cpp)
 target_link_libraries(tas_autonomous_control_node
   ${catkin_LIBRARIES}
 )
-target_link_libraries(LaserBack
-  ${catkin_LIBRARIES}
-)
 
-target_link_libraries(Parking
+target_link_libraries(parking_node
   ${catkin_LIBRARIES}
 )
 #############
