@@ -4,6 +4,7 @@
 #include <iostream>
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Vector3Stamped.h>
 #include "std_msgs/Int16.h"
 #include "std_msgs/Int16MultiArray.h"
 #include <sensor_msgs/LaserScan.h>
@@ -28,6 +29,7 @@ public:
 	ros::Subscriber laser_back_sub;
 	ros::Subscriber laser_front_sub;
 	ros::Subscriber wii_communication_sub;
+	ros::Subscriber imu_magnetic_orientation;
 
 	ros::Publisher cmd_parking_pub;
 
@@ -38,6 +40,8 @@ public:
 	bool park;
 	int fortschritt;
 	int detect_edge;
+
+	float orientation;
 
  int startwinkel1, winkeldiff1;
 float threshold1;
@@ -50,6 +54,7 @@ float threshold1;
 	void LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void LaserFrontCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void wiiCommunicationCallback(const std_msgs::Int16MultiArray::ConstPtr& msg);
+	void OrientationCallback(const geometry_msgs::Vector3Stamped::ConstPtr& msg);
 	void updateParam();
 
 

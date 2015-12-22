@@ -7,6 +7,7 @@ parking::parking()
     cmd_parking_pub = n.advertise<geometry_msgs::Twist>("cmd_vel", 10);
     laser_back_sub = n.subscribe<sensor_msgs::LaserScan>("scan_back",10, &parking::LaserBackCallback, this);
     laser_front_sub = n.subscribe<sensor_msgs::LaserScan>("scan",10, &parking::LaserFrontCallback, this);
+	imu_magnetic_orientation = n.subscribe<geometry_msgs::Vector3Stamped>("magnetic",10, &parking::OrientationCallback, this);
 
 	
     wii_communication_sub = n.subscribe<std_msgs::Int16MultiArray>("wii_communication",1000,&parking::wiiCommunicationCallback, this);
@@ -61,6 +62,13 @@ void parking::wiiCommunicationCallback(const std_msgs::Int16MultiArray::ConstPtr
 		fortschritt =0;
 	}
 }
+
+void parking::OrientationCallback(const geometry_msgs::Vector3Stamped::ConstPtr& msg)
+{
+	orientation = msg->vector.y;
+}
+
+
 
 void parking::updateParam() {
     n.getParam("/startwinkel1", startwinkel1);

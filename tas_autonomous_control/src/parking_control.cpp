@@ -13,7 +13,8 @@ float angle_old_l = -1;
 float angle_old_r = -1;
 float angle_new_r = -1;
 int side = -1;
-bool test = true;
+bool start1 = true, start2 = true;
+float start_orientation;
 
 //Kommentar
 int main(int argc, char** argv)
@@ -23,12 +24,15 @@ int main(int argc, char** argv)
 
 	parking einparken;
 
+
+
     ros::Rate loop_rate(10);
     while (ros::ok())
 	{
 		einparken.updateParam();
         if (einparken.park)
 		{
+			if (start1 == true) {start_orientation = einparken.orientation; start1 = false;}
 //ROS_INFO("start");
 			if (einparken.detect_edge < 3)// sollte 3 sein
 			{
@@ -36,12 +40,17 @@ int main(int argc, char** argv)
 			}
 			else if (einparken.detect_edge == 3)// sollte 3 sein
 			{
-if (test = true){
-for (int i = 1; i < 50; i++){
-einparken.cmd_parking.linear.x = 0.00;
-einparken.cmd_parking.angular.z = 0.0;
-set_cmd_vel(einparken.cmd_parking, &einparken); test = false;}
-				parking_procedure(&einparken); }
+				if (start2 = true)
+				{
+					for (int i = 1; i < 50; i++)
+					{
+						einparken.cmd_parking.linear.x = 0.00;
+						einparken.cmd_parking.angular.z = 0.0;
+						set_cmd_vel(einparken.cmd_parking, &einparken); 
+						start2 = false;
+					}
+						parking_procedure(&einparken); 
+				}
 			}
 		}
 		
@@ -112,14 +121,14 @@ ROS_INFO("1. 1-5 = %f", einparken->range_array_front[320]/einparken->range_array
 	}
 /*	else if ((fabs(lese_winkel( einparken->range_array_back, 1, 2)-lese_winkel( einparken->range_array_front, 158, 2)) > 0.05 || fabs(lese_winkel( einparken->range_array_back, 78, 2)-lese_winkel( einparken->range_array_front, 80, 2)) > 0.2 ) && einparken->fortschritt <2)*/
 
-	else if ( (einparken->range_array_front[420]/einparken->range_array_front[428] > 0.99 || einparken->range_array_front[420]/einparken->range_array_front[428] < 0.96 || einparken->range_array_front[420]/einparken->range_array_front[436] > 0.99 || einparken->range_array_front[420]/einparken->range_array_front[436] < 0.96) && einparken->fortschritt <2) 
-
+/*	else if ( (lese_winkel( einparken->range_array_front, 130, 1)/lese_winkel( einparken->range_array_front, 131, 1) > 0.99 || lese_winkel( einparken->range_array_front, 130, 1)/lese_winkel( einparken->range_array_front, 131, 1) < 0.96 || lese_winkel( einparken->range_array_front, 131, 1)/lese_winkel( einparken->range_array_front, 132, 1) > 0.99 || lese_winkel( einparken->range_array_front, 131, 1)/lese_winkel( einparken->range_array_front, 132, 1) < 0.96) && einparken->fortschritt <2) */
+    else if ((fabs(start_orientation/einparken->orientation) < 0.95 || fabs(start_orientation/einparken->orientation) > 1.05 ) && einparken->fortschritt <2)
 	{
-	einparken->fortschritt = 1;
+		einparken->fortschritt = 1;
 
 
-ROS_INFO("2. 1-3 = %f", einparken->range_array_front[320]/einparken->range_array_front[328]);
-ROS_INFO("2. 1-5 = %f", einparken->range_array_front[320]/einparken->range_array_front[336]);
+/*ROS_INFO("2. 1-3 = %f", einparken->range_array_front[320]/einparken->range_array_front[328]);
+/*ROS_INFO("2. 1-5 = %f", einparken->range_array_front[320]/einparken->range_array_front[336]);
 
 /*
 ROS_INFO("2. back[1-5]/front[1-5] = %f", fabs(lese_winkel( einparken->range_array_back, 1, 2)-lese_winkel( einparken->range_array_front, 158, 2)));
