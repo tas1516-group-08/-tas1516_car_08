@@ -19,8 +19,12 @@ control::control()
     previous_ServoMsg.x = 1500;
     previous_ServoMsg.y = 1500;
 
+
+	steering_angle_offset = 80;
+
     nh_.setParam("/Fp_x", Fp_x);
     nh_.setParam("/Fp_y", Fp_y);
+    nh_.setParam("/steering_offset", steering_angle_offset);
 
 }
 // We can subscribe to the odom here and get some feedback signals so later we can build our controllers
@@ -102,4 +106,5 @@ geometry_msgs::Vector3 control::P_Controller()
 void control::updateParam() {
     nh_.getParam("/Fp_x", Fp_x);
     nh_.getParam("/Fp_y", Fp_y);
+    nh_.getParam("/steering_offset", steering_angle_offset);
 }

@@ -13,6 +13,7 @@
 #define CAR_LENGTH              0.355
 #define SCALE_FAKTOR_STEERING   500
 
+// Kommentar
 class parking
 {
 public:
@@ -25,19 +26,31 @@ public:
 	geometry_msgs::Twist cmd_parking;
 
 	ros::Subscriber laser_back_sub;
+	ros::Subscriber laser_front_sub;
 	ros::Subscriber wii_communication_sub;
 
 	ros::Publisher cmd_parking_pub;
 
 	const float *rangesPtr;
-	float range_array[500];
-	bool laser_back_changed;
+	float range_array_back[640];
+	float range_array_front[640];
 
 	bool park;
+	int fortschritt;
+	int detect_edge;
+
+ int startwinkel1, winkeldiff1;
+float threshold1;
+
+
+
+
 
 // functions
 	void LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
+	void LaserFrontCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void wiiCommunicationCallback(const std_msgs::Int16MultiArray::ConstPtr& msg);
+	void updateParam();
 
 
 };

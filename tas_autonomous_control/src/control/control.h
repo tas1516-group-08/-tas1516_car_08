@@ -34,6 +34,8 @@ public:
     double odom_angularVelocity;
     double odom_steeringAngle;
 
+	int steering_angle_offset; 
+
     int Fp_x, Fp_y;
 
     geometry_msgs::Vector3 current_ServoMsg;
