@@ -1,7 +1,6 @@
 #ifndef PARKING_H
 #define PARKING_H
 
-#include <iostream>
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Vector3Stamped.h>
@@ -14,24 +13,28 @@
 #define CAR_LENGTH              0.355
 #define SCALE_FAKTOR_STEERING   500
 
-// Kommentar
+// Klasse zum Einparken des Autos. 
 class parking
 {
 public:
+
 	parking();
 
-
+// Node Handle
 	ros::NodeHandle n;
-// variables
-	std_msgs::Int16 control_Mode;
-	geometry_msgs::Twist cmd_parking;
 
+// Subscriber
 	ros::Subscriber laser_back_sub;
 	ros::Subscriber laser_front_sub;
 	ros::Subscriber wii_communication_sub;
 	ros::Subscriber imu_magnetic_orientation;
 
+//Publisher
 	ros::Publisher cmd_parking_pub;
+
+// Variablen
+	std_msgs::Int16 control_Mode;
+	geometry_msgs::Twist cmd_parking;
 
 	const float *rangesPtr;
 	float range_array_back[640];
@@ -39,24 +42,24 @@ public:
 
 	bool park;
 	int fortschritt;
+
 	int detect_edge;
 
-	float orientation;
+	bool start1, start2;
 
- int startwinkel1, winkeldiff1;
-float threshold1;
+	float edge_detector[5];
 
+	float orientation, orientation_tau;
 
+	int startwinkel1, winkeldiff1;
+	float threshold1;
 
-
-
-// functions
+// Funktion-predeklaration
 	void LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void LaserFrontCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void wiiCommunicationCallback(const std_msgs::Int16MultiArray::ConstPtr& msg);
 	void OrientationCallback(const geometry_msgs::Vector3Stamped::ConstPtr& msg);
 	void updateParam();
-
 
 };
 #endif // PARKING_H
