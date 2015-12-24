@@ -1,5 +1,7 @@
 #include "parking.h"
 
+int counter2 =0;
+
 // Kommentar
 parking::parking()
 {
@@ -9,7 +11,7 @@ parking::parking()
 // Subscriber
     laser_back_sub = n.subscribe<sensor_msgs::LaserScan>("scan_back",10, &parking::LaserBackCallback, this);
     laser_front_sub = n.subscribe<sensor_msgs::LaserScan>("scan",10, &parking::LaserFrontCallback, this);
-	imu_magnetic_orientation = n.subscribe<geometry_msgs::Vector3Stamped>("magnetic",100, &parking::OrientationCallback, this);
+	imu_orientation = n.subscribe<sensor_msgs::Imu>("imu",10, &parking::OrientationCallback, this);
     wii_communication_sub = n.subscribe<std_msgs::Int16MultiArray>("wii_communication",1000,&parking::wiiCommunicationCallback, this);
 
 	orientation_tau = 0;
@@ -77,12 +79,10 @@ void parking::wiiCommunicationCallback(const std_msgs::Int16MultiArray::ConstPtr
 	}
 }
 
-// Callback für Orientierung des Autos über IMU /magnetic Topic. 
-void parking::OrientationCallback(const geometry_msgs::Vector3Stamped::ConstPtr& msg)
+// Callback für Orientierung des Autos über IMU /magnetic Topic. Bildet immer wieder Mittelwerte.
+void parking::OrientationCallback(const sensor_msgs::Imu::ConstPtr& msg)
 {
-	orientation_tau = orientation;
-	orientation = msg->vector.y;
-	orientation = (orientation+5*orientation_tau)/6;
+	orientation = msg->orientation.w;
 }
 
 

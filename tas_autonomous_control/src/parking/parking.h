@@ -7,6 +7,7 @@
 #include "std_msgs/Int16.h"
 #include "std_msgs/Int16MultiArray.h"
 #include <sensor_msgs/LaserScan.h>
+#include <sensor_msgs/Imu.h>
 #include <math.h>
 
 #define PI                     3.14159265
@@ -27,7 +28,7 @@ public:
 	ros::Subscriber laser_back_sub;
 	ros::Subscriber laser_front_sub;
 	ros::Subscriber wii_communication_sub;
-	ros::Subscriber imu_magnetic_orientation;
+	ros::Subscriber imu_orientation;
 
 //Publisher
 	ros::Publisher cmd_parking_pub;
@@ -58,7 +59,7 @@ public:
 	void LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void LaserFrontCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void wiiCommunicationCallback(const std_msgs::Int16MultiArray::ConstPtr& msg);
-	void OrientationCallback(const geometry_msgs::Vector3Stamped::ConstPtr& msg);
+	void OrientationCallback(const sensor_msgs::Imu::ConstPtr& msg);
 	void updateParam();
 
 };
