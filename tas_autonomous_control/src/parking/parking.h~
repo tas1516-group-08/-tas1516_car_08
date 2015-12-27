@@ -38,8 +38,8 @@ public:
 	geometry_msgs::Twist cmd_parking;
 
 	const float *rangesPtr;
-	float range_array_back[640];
-	float range_array_front[640];
+	float range_array_back[455];
+	float range_array_front[641];
 
 	bool park;
 	int fortschritt;
@@ -48,7 +48,8 @@ public:
 
 	bool start1, start2;
 
-	float edge_detector[5];
+	float edge_detector_l[5];
+	float edge_detector_r[5];
 
 	float orientation, orientation_tau;
 
@@ -59,7 +60,7 @@ public:
 	void LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void LaserFrontCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void wiiCommunicationCallback(const std_msgs::Int16MultiArray::ConstPtr& msg);
-	void OrientationCallback(const geometry_msgs::Vector3Stamped::ConstPtr& msg);
+	void OrientationCallback(const sensor_msgs::Imu::ConstPtr& msg);
 	void updateParam();
 
 };
