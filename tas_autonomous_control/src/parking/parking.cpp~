@@ -88,12 +88,12 @@ void parking::OrientationCallback(const sensor_msgs::Imu::ConstPtr& msg)
 	orientation = msg->orientation.w;
 }
 
-
+/*
 // Funktion zur Parameterabfrage von Parameterserver
 void parking::updateParam() {
     n.getParam("/startwinkel1", startwinkel1);
     n.getParam("/winkeldiff1", winkeldiff1);
     n.getParam("/threshold1", threshold1);
 }
-
+*/
 

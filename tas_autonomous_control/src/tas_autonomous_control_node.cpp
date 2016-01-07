@@ -1,6 +1,7 @@
 #include "control/control.h"
 #include <geometry_msgs/Vector3.h>
 
+
 int main(int argc, char** argv)
 {
 
@@ -29,10 +30,10 @@ int main(int argc, char** argv)
 
 
 		if(autonomous_control.cmd_linearVelocity>epsilon){
-                    autonomous_control.control_servo.x = 1535;
+                    autonomous_control.control_servo.x = 1540;
                 }
                 else if(autonomous_control.cmd_linearVelocity< (epsilon*(-1))){
-                    autonomous_control.control_servo.x = 1300;
+                    autonomous_control.control_servo.x = 1260;
                 }
                 else{
                     autonomous_control.control_servo.x = 1500;

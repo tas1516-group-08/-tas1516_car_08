@@ -20,7 +20,8 @@ control::control()
     previous_ServoMsg.y = 1500;
 
 
-	steering_angle_offset = 80;
+	//steering_angle_offset = 80; // Vettel
+	steering_angle_offset = 17; // Gerty
 
     nh_.setParam("/Fp_x", Fp_x);
     nh_.setParam("/Fp_y", Fp_y);

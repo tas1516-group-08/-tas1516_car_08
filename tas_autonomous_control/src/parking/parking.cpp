@@ -11,7 +11,7 @@ parking::parking()
 // Subscriber
     laser_back_sub = n.subscribe<sensor_msgs::LaserScan>("scan_back",10, &parking::LaserBackCallback, this);
     laser_front_sub = n.subscribe<sensor_msgs::LaserScan>("scan",10, &parking::LaserFrontCallback, this);
-	imu_orientation = n.subscribe<sensor_msgs::Imu>("imu",10, &parking::OrientationCallback, this);
+	imu_orientation = n.subscribe<sensor_msgs::Imu>("/imu/data",10, &parking::OrientationCallback, this);
     wii_communication_sub = n.subscribe<std_msgs::Int16MultiArray>("wii_communication",1000,&parking::wiiCommunicationCallback, this);
 
 	orientation_tau = 0;
@@ -88,12 +88,12 @@ void parking::OrientationCallback(const sensor_msgs::Imu::ConstPtr& msg)
 	orientation = msg->orientation.w;
 }
 
-
+/*
 // Funktion zur Parameterabfrage von Parameterserver
 void parking::updateParam() {
     n.getParam("/startwinkel1", startwinkel1);
     n.getParam("/winkeldiff1", winkeldiff1);
     n.getParam("/threshold1", threshold1);
 }
-
+*/
 
