@@ -52,6 +52,9 @@ int main(int argc, char** argv)
 					ein_aus_parken = 0;
 					einparken.detect_edge = 0;
 					side = 0; 
+					for (int a = 0; a < 5; a++){
+					einparken.edge_detector_l[a] = 0;
+					einparken.edge_detector_r[a] = 0;}
 				}
 				ROS_INFO("ein_aus_parken = %i", static_cast<int>(ein_aus_parken));
 				ROS_INFO("side = %i", side);
@@ -121,7 +124,7 @@ int Start_parking(parking *einparken){
 	if (side == 0 || side == -1){ angle_new_r = lese_winkel( 1, 158, 2, einparken); } // Rechte Seite hinten auslesen.
 
 //ROS_INFO("links1: %f", angle_new_l );
-ROS_INFO("rechts1: %f", angle_new_r );
+//ROS_INFO("rechts1: %f", angle_new_r );
 
 // Wenn die Abstände zu groß sind, ignoriere sie. Das sind Störungen weit weg der Parklücke.
 	if (angle_new_l > 1 )
