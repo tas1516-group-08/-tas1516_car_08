@@ -55,11 +55,11 @@ int main(int argc, char** argv)
             else
             {
                 ROS_INFO("Automatic Control!");
-/*
-        regler = autonomous_control.P_Controller();
+
+      /*  regler = autonomous_control.P_Controller();
                 autonomous_control.control_servo.x = regler.x;
-        autonomous_control.control_servo.y = regler.y;
-*/
+        autonomous_control.control_servo.y = regler.y; */
+
 
                 if(autonomous_control.cmd_linearVelocity>0)
                 {
@@ -75,7 +75,8 @@ int main(int argc, char** argv)
                 }
 
                 autonomous_control.control_servo.y = autonomous_control.cmd_steeringAngle + autonomous_control.steering_angle_offset;
-            }
+            
+	    }
 
             autonomous_control.control_servo_pub_.publish(autonomous_control.control_servo);
 
