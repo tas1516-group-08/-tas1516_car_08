@@ -17,7 +17,6 @@ int main(int argc, char** argv)
 
     float epsilon = 1e-4;
 
-
     while(ros::ok())
     {
         autonomous_control.updateParam();
@@ -54,32 +53,34 @@ int main(int argc, char** argv)
             }
             else
             {
-                ROS_INFO("Automatic Control!");
-
-      /*  regler = autonomous_control.P_Controller();
-                autonomous_control.control_servo.x = regler.x;
-        autonomous_control.control_servo.y = regler.y; */
-
+                //ROS_INFO("Automatic Control!");
 
                 if(autonomous_control.cmd_linearVelocity>0)
                 {
-                    autonomous_control.control_servo.x = 1580;
+                    autonomous_control.control_servo.x = 1575; //1580
+                    //autonomous_control.control_servo.x = autonomous_control.P_Controller().x; 
+
                 }
                 else if(autonomous_control.cmd_linearVelocity<0)
                 {
-                    autonomous_control.control_servo.x = 1300;
+                    autonomous_control.control_servo.x = 1240; //1300
+                    //autonomous_control.control_servo.x = autonomous_control.P_Controller().x; 
                 }
                 else
                 {
                     autonomous_control.control_servo.x = 1500;
                 }
-
+                autonomous_control.control_servo.y = autonomous_control.P_Controller().y + autonomous_control.steering_angle_offset;
                 autonomous_control.control_servo.y = autonomous_control.cmd_steeringAngle + autonomous_control.steering_angle_offset;
             
 	    }
 
+/*
+                ROS_INFO("cmd_vel = %f", autonomous_control.cmd_linearVelocity);
+                ROS_INFO("ist_vel = %f", autonomous_control.control_servo.x);*/
+                ROS_INFO("cmd_angle = %f", autonomous_control.cmd_steeringAngle);
+                ROS_INFO("ist_angle = %f", autonomous_control.control_servo.y);
             autonomous_control.control_servo_pub_.publish(autonomous_control.control_servo);
-
         }
 
         ros::spinOnce();

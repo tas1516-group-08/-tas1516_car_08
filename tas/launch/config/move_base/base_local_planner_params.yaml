@@ -16,11 +16,11 @@ TrajectoryPlannerROS:
   min_in_place_rotational_vel: 0.0
   xy_goal_tolerance: 0.5 #0.5
   yaw_goal_tolerance: 1.5
-  goal_distance_bias: 0.8 #0.2
-  path_distance_bias: 1.5 #0.8
-  occdist_scale: 0.1
-  heading_lookahead: 0.325
-  oscillation_reset_dist: 0.3 #0.05
+  goal_distance_bias: 0.2
+  path_distance_bias: 0.1 #0.8
+  occdist_scale: 0.05
+  heading_lookahead: 1.0 #0.325
+  oscillation_reset_dist: 2 #0.05
   holonomic_robot: false
   acc_lim_th: 2.5 #3.2
   acc_lim_x: 2.5 #2.5
@@ -33,4 +33,4 @@ TrajectoryPlannerROS:
   publish_cost_grid_pc: true
   ############
   pdist_scale: 0.3
-  occdist_scale: 0.2
+

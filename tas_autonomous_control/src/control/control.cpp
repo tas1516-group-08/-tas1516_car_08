@@ -10,8 +10,8 @@ control::control()
 
     wii_communication_sub = nh_.subscribe<std_msgs::Int16MultiArray>("wii_communication",1000,&control::wiiCommunicationCallback,this);
 
-    Fp_x = 1;// need to test! default:125
-    Fp_y = 1;
+    Fp_x = 125;// need to test! default:125
+    Fp_y = 0.5;
 
     current_ServoMsg.x = 1500;
     current_ServoMsg.y = 1500;
@@ -21,7 +21,8 @@ control::control()
 
 
 	//steering_angle_offset = 80; // Vettel
-	steering_angle_offset = 17; // Gerty
+	steering_angle_offset = 80; // Futurama
+	//steering_angle_offset = 17; // Gerty
 
     nh_.setParam("/Fp_x", Fp_x);
     nh_.setParam("/Fp_y", Fp_y);
@@ -56,7 +57,7 @@ void control::cmdCallback(const geometry_msgs::Twist::ConstPtr& msg)
 
     cmd_steeringAngle = 180/PI*atan(cmd_angularVelocity/cmd_linearVelocity*CAR_LENGTH);
 
-    cmd_steeringAngle = 1500 + 500/30*cmd_steeringAngle;
+    cmd_steeringAngle = 1500 + 500/30*cmd_steeringAngle; //500
 
     if(cmd_steeringAngle > 2000)
     {
@@ -77,9 +78,10 @@ void control::wiiCommunicationCallback(const std_msgs::Int16MultiArray::ConstPtr
 geometry_msgs::Vector3 control::P_Controller()
 {
     current_ServoMsg.x = previous_ServoMsg.x + Fp_x*(cmd_linearVelocity - odom_linearVelocity);
+	//ROS_INFO("delta_ vel = %f", cmd_linearVelocity - odom_linearVelocity);
 
     current_ServoMsg.y = previous_ServoMsg.y + Fp_y*(cmd_steeringAngle - odom_steeringAngle);
-
+	ROS_INFO("delta_ angle = %f", cmd_steeringAngle - odom_steeringAngle);
 
     if(current_ServoMsg.x > 1580)
     {
