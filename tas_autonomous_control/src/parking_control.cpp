@@ -35,13 +35,13 @@ int main(int argc, char** argv)
 			{	
 				einparken.start1 = false;
 
-				if ((lese_winkel( 1, 1, 20, &einparken) + lese_winkel( 0, 140, 20, &einparken)) < 0.9) // Wenn das Auto schon in der linken Parklücke steht:
+				if ((lese_winkel( 1, 1, 20, &einparken) + lese_winkel( 0, 160, 20, &einparken)) < 0.9) // Wenn das Auto schon in der linken Parklücke steht:
 				{
 					ein_aus_parken = 1; 
 					side = 1;
 					einparken.detect_edge = 3;
 				}
-				else if ((lese_winkel( 0, 1, 20, &einparken) + lese_winkel( 1, 140, 20, &einparken)) < 0.9) // Wenn das Auto schon in der rechten Parklücke steht:
+				else if ((lese_winkel( 0, 1, 20, &einparken) + lese_winkel( 1, 160, 20, &einparken)) < 0.9) // Wenn das Auto schon in der rechten Parklücke steht:
 				{
 					ein_aus_parken = 1; 
 					side = -1;
@@ -122,7 +122,7 @@ int Start_parking(parking *einparken){
     
 // Lese winkel hinten links/rechts, um die Ecken der Parklücke zu finden
 	if (side == 0 || side == 1){ angle_new_l = lese_winkel( 1, 1, 2, einparken); } // Linke Seite hinten auslesen.
-	if (side == 0 || side == -1){ angle_new_r = lese_winkel( 1, 158, 2, einparken); } // Rechte Seite hinten auslesen.
+	if (side == 0 || side == -1){ angle_new_r = lese_winkel( 1, 168, 2, einparken); } // Rechte Seite hinten auslesen.
 
 //ROS_INFO("links1: %f", angle_new_l );
 //ROS_INFO("rechts1: %f", angle_new_r );
@@ -205,9 +205,9 @@ int parking_procedure(parking *einparken)
 		//LSB
 		car_state += 1 * ((start_orientation - einparken->orientation) < 0.04 && (start_orientation - einparken->orientation) > -0.04); // 0 = Auto steht schief;  1 = Auto steht gerade
 		car_state += 2 * (fabs(start_orientation - einparken->orientation) < 0.43 && fabs(start_orientation - einparken->orientation) > 0.36); // 0 = Auto steht schief; 1 = Auto steht im 45° Winkel
-		car_state += 4 * ((lese_winkel( 1, 40, 10, einparken) + lese_winkel( 0, 110, 10, einparken)) < 0.8); // 0 = außerhalb Parklücke; 1 = innerhalb Parklücke
+		car_state += 4 * ((lese_winkel( 1, 40, 10, einparken) + lese_winkel( 0, 130, 10, einparken)) < 0.8); // 0 = außerhalb Parklücke; 1 = innerhalb Parklücke
 		car_state += 8 * (lese_winkel( 1, 25, 40, einparken) < 0.65); // 0 = weit weg von der Wand; 1 = nahe der Wand
-		car_state += 16 * (lese_winkel(1, 50, 5, einparken)/lese_winkel( 0, 105, 5, einparken) > 0.84 && lese_winkel( 1, 50, 5, einparken)/lese_winkel( 0, 105, 5, einparken) < 1.3); // 0 = Abstand vorne != Abstand hinten; 1 = Abstand vorne = Abstand hinten
+		car_state += 16 * (lese_winkel(1, 50, 5, einparken)/lese_winkel( 0, 125, 5, einparken) > 0.84 && lese_winkel( 1, 50, 5, einparken)/lese_winkel( 0, 125, 5, einparken) < 1.3); // 0 = Abstand vorne != Abstand hinten; 1 = Abstand vorne = Abstand hinten
 		//MSB
 	}
 	else if (side == -1) // Wenn Parklücke auf rechter Seite:
@@ -215,9 +215,9 @@ int parking_procedure(parking *einparken)
 		//LSB
 		car_state += 1 * ((start_orientation - einparken->orientation) < 0.04 && (start_orientation - einparken->orientation) > -0.04); // 0 = Auto steht schief;  1 = Auto steht gerade
 		car_state += 2 * (fabs(start_orientation - einparken->orientation) < 0.43 && fabs(start_orientation - einparken->orientation) > 0.36); // 0 = Auto steht schief; 1 = Auto steht im 45° Winkel
-		car_state += 4 * ((lese_winkel( 0, 40, 10, einparken) + lese_winkel( 1, 110, 10, einparken)) < 0.8); // 0 = außerhalb Parklücke; 1 = innerhalb Parklücke
-		car_state += 8 * (lese_winkel( 1, 95, 40, einparken) < 0.8); // 0 = weit weg von der Wand; 1 = nahe der Wand
-		car_state += 16 * (lese_winkel(1, 105, 5, einparken)/lese_winkel( 0, 50, 5, einparken) > 0.84 && lese_winkel( 1, 105, 5, einparken)/lese_winkel( 0, 50, 5, einparken) < 1.3); // 0 = Abstand vorne != Abstand hinten; 1 = Abstand vorne = Abstand hinten
+		car_state += 4 * ((lese_winkel( 0, 40, 10, einparken) + lese_winkel( 1, 130, 10, einparken)) < 0.8); // 0 = außerhalb Parklücke; 1 = innerhalb Parklücke
+		car_state += 8 * (lese_winkel( 1, 115, 40, einparken) < 0.8); // 0 = weit weg von der Wand; 1 = nahe der Wand
+		car_state += 16 * (lese_winkel(1, 125, 5, einparken)/lese_winkel( 0, 50, 5, einparken) > 0.84 && lese_winkel( 1, 125, 5, einparken)/lese_winkel( 0, 50, 5, einparken) < 1.3); // 0 = Abstand vorne != Abstand hinten; 1 = Abstand vorne = Abstand hinten
 		//MSB
 	}
 
@@ -301,12 +301,12 @@ ROS_INFO("back/front rechts = %f", lese_winkel( 1, 105, 5, einparken)/lese_winke
 
 			if (ein_aus_parken == 0) // Wenn einparken angesagt ist:
 			{
-				if ((lese_winkel( 1, 60, 5, einparken)/lese_winkel( 0, 95, 5, einparken) < 0.9 && side == 1) || (lese_winkel( 1, 95, 5, einparken)/lese_winkel( 0, 60, 5, einparken) < 0.9 && side == -1 )) // Wenn Auto zu weit hinten steht:
+				if ((lese_winkel( 1, 60, 5, einparken)/lese_winkel( 0, 115, 5, einparken) < 0.9 && side == 1) || (lese_winkel( 1, 115, 5, einparken)/lese_winkel( 0, 60, 5, einparken) < 0.9 && side == -1 )) // Wenn Auto zu weit hinten steht:
 				{
 					einparken->cmd_parking.linear.x = 0.10;
 					velocity_old = einparken->cmd_parking.linear.x;
 				}
-				else if ((lese_winkel( 1, 60, 5, einparken)/lese_winkel( 0, 95, 5, einparken) > 1.1 && side == 1) || (lese_winkel( 1, 95, 5, einparken)/lese_winkel( 0, 60, 5, einparken) > 1.1 && side == -1 )) // Wenn Auto zu weit vorne steht:
+				else if ((lese_winkel( 1, 60, 5, einparken)/lese_winkel( 0, 115, 5, einparken) > 1.1 && side == 1) || (lese_winkel( 1, 115, 5, einparken)/lese_winkel( 0, 60, 5, einparken) > 1.1 && side == -1 )) // Wenn Auto zu weit vorne steht:
 				{
 					einparken->cmd_parking.linear.x = -0.10;
 					velocity_old = einparken->cmd_parking.linear.x;
@@ -327,7 +327,7 @@ ROS_INFO("back/front rechts = %f", lese_winkel( 1, 105, 5, einparken)/lese_winke
 		case 21: case 29: // 10101, 11101
 			if (ein_aus_parken == 1)
 			{
-				if ((lese_winkel( 1, 60, 5, einparken)/lese_winkel( 0, 95, 5, einparken) > 0.8 && side == 1) || (lese_winkel( 1, 95, 5, einparken)/lese_winkel( 0, 60, 5, einparken) > 0.8 && side == -1 )) // Wenn Auto zu weit vorne steht:
+				if ((lese_winkel( 1, 60, 5, einparken)/lese_winkel( 0, 115, 5, einparken) > 0.8 && side == 1) || (lese_winkel( 1, 115, 5, einparken)/lese_winkel( 0, 60, 5, einparken) > 0.8 && side == -1 )) // Wenn Auto zu weit vorne steht:
 				{
 					einparken->cmd_parking.linear.x = -0.2 * ein_aus_parken;
 					velocity_old = einparken->cmd_parking.linear.x;
