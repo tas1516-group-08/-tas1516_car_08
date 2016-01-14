@@ -21,8 +21,8 @@ control::control()
 
 
 	//steering_angle_offset = 80; // Vettel
-	steering_angle_offset = 80; // Futurama
-	//steering_angle_offset = 17; // Gerty
+	//steering_angle_offset = 80; // Futurama
+	steering_angle_offset = 17; // Gerty
 
     nh_.setParam("/Fp_x", Fp_x);
     nh_.setParam("/Fp_y", Fp_y);
@@ -78,7 +78,7 @@ void control::wiiCommunicationCallback(const std_msgs::Int16MultiArray::ConstPtr
 geometry_msgs::Vector3 control::P_Controller()
 {
     current_ServoMsg.x = previous_ServoMsg.x + Fp_x*(cmd_linearVelocity - odom_linearVelocity);
-	ROS_INFO("delta_ vel = %f", cmd_linearVelocity - odom_linearVelocity);
+	//ROS_INFO("delta_ vel = %f", cmd_linearVelocity - odom_linearVelocity);
 
     current_ServoMsg.y = previous_ServoMsg.y + Fp_y*(cmd_steeringAngle - odom_steeringAngle);
 	ROS_INFO("delta_ angle = %f", cmd_steeringAngle - odom_steeringAngle);

@@ -38,8 +38,8 @@ public:
 	geometry_msgs::Twist cmd_parking;
 
 	const float *rangesPtr;
-	float range_array_back[455];
-	float range_array_front[641];
+	float range_array_back[722];
+	float range_array_front[722];
 
 	bool park;
 	int fortschritt;

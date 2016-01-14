@@ -33,7 +33,7 @@ void wii_lib::wiiStateCallback(const wiimote::State::ConstPtr& wiiState)
         }
     }
 
-    else if (wiiState.get()->buttons[2]==1) {
+    else if (wiiState.get()->buttons[4]==1) { //A-button
         controlMode.data = 2; /*setting controlMode flag to 2*/
 
         if(wiiState.get()->nunchuk_buttons[WII_BUTTON_NUNCHUK_Z]==1)
@@ -63,7 +63,7 @@ void wii_lib::wiiStateCallback(const wiimote::State::ConstPtr& wiiState)
 
             if(wiiState.get()->nunchuk_joystick_zeroed[1]>=0)
             {
-                SCALE_FAKTOR_THROTTLE = 200; /*scale factor for driving forward*/
+                SCALE_FAKTOR_THROTTLE = 50; /*scale factor for driving forward*/
             }
             else
             {

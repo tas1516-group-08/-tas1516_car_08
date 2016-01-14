@@ -11,7 +11,7 @@ parking::parking()
 // Subscriber
     laser_back_sub = n.subscribe<sensor_msgs::LaserScan>("scan_back",10, &parking::LaserBackCallback, this);
     laser_front_sub = n.subscribe<sensor_msgs::LaserScan>("scan",10, &parking::LaserFrontCallback, this);
-	imu_orientation = n.subscribe<sensor_msgs::Imu>("imu",10, &parking::OrientationCallback, this);
+	imu_orientation = n.subscribe<sensor_msgs::Imu>("/imu/data",10, &parking::OrientationCallback, this);
     wii_communication_sub = n.subscribe<std_msgs::Int16MultiArray>("wii_communication",1000,&parking::wiiCommunicationCallback, this);
 
 	orientation_tau = 0;
@@ -46,7 +46,7 @@ parking::parking()
 void parking::LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
     rangesPtr = &(msg->ranges)[0];
-	for (int i = 1; i <= 454; i++)
+	for (int i = 1; i <= 720; i++)
 	{
 		range_array_back[i] = msg->ranges[i];
 	}
@@ -56,7 +56,7 @@ void parking::LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 void parking::LaserFrontCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
     rangesPtr = &(msg->ranges)[0];
-	for (int i = 1; i <= 640; i++)
+	for (int i = 1; i <= 720; i++)
 	{
 		range_array_front[i] = msg->ranges[i];
 	}

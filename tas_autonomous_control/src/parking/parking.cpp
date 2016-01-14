@@ -46,7 +46,7 @@ parking::parking()
 void parking::LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
     rangesPtr = &(msg->ranges)[0];
-	for (int i = 1; i <= 454; i++)
+	for (int i = 1; i <= 719; i++)
 	{
 		range_array_back[i] = msg->ranges[i];
 	}
@@ -56,7 +56,7 @@ void parking::LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 void parking::LaserFrontCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
     rangesPtr = &(msg->ranges)[0];
-	for (int i = 1; i <= 640; i++)
+	for (int i = 1; i <= 719; i++)
 	{
 		range_array_front[i] = msg->ranges[i];
 	}

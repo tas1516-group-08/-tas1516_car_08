@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 
                 if(autonomous_control.cmd_linearVelocity>0)
                 {
-                    autonomous_control.control_servo.x = 1575; //1580
+                    autonomous_control.control_servo.x = 1565; //1580
                     //autonomous_control.control_servo.x = autonomous_control.P_Controller().x; 
 
                 }
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
                     autonomous_control.control_servo.x = 1500;
                 }
                 autonomous_control.control_servo.y = autonomous_control.P_Controller().y + autonomous_control.steering_angle_offset;
-                autonomous_control.control_servo.y = autonomous_control.cmd_ + autonomous_control.steering_angle_offset;
+                autonomous_control.control_servo.y = autonomous_control.cmd_steeringAngle + autonomous_control.steering_angle_offset;
             
 	    }
 
