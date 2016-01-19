@@ -63,7 +63,7 @@ void wii_lib::wiiStateCallback(const wiimote::State::ConstPtr& wiiState)
 
             if(wiiState.get()->nunchuk_joystick_zeroed[1]>=0)
             {
-                SCALE_FAKTOR_THROTTLE = 50; /*scale factor for driving forward*/
+                SCALE_FAKTOR_THROTTLE = 100; /*scale factor for driving forward*/
             }
             else
             {

@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 
 
 		if(autonomous_control.cmd_linearVelocity>epsilon){
-                    autonomous_control.control_servo.x = 1540;
+                    autonomous_control.control_servo.x = 1550;
                 }
                 else if(autonomous_control.cmd_linearVelocity< (epsilon*(-1))){
                     autonomous_control.control_servo.x = 1260;

@@ -55,6 +55,7 @@ public:
 
 	int startwinkel1, winkeldiff1;
 	float threshold1;
+	float laenge;
 
 // Funktion-predeklaration
 	void LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg);

@@ -1,4 +1,8 @@
 global_costmap:
+  plugins:
+    - {name: static_layer, type: "costmap_2d::StaticLayer"}
+    - {name: wall_layer, type: "costmap_2d::ObstacleLayer"}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
   global_frame: /map
   robot_base_frame: base_link
   map_type: costmap
@@ -10,3 +14,16 @@ global_costmap:
   rolling_window: false
   transform_tolerance: 0.2 #500
   resolution: 0.05
+
+
+
+  static_layer:
+    unknown_cost_value: 0
+
+  wall_layer:
+    observation_sources: fake_scan
+    fake_scan: {sensor_frame: map, data_type: LaserScan, topic: faked_wall, marking: true, clearing: true}
+
+
+  inflation_layer:
+    inflation_radius: 0.8

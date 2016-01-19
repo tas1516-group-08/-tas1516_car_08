@@ -1,4 +1,5 @@
 #include "parking.h"
+#include "math.h"
 
 int counter2 =0;
 
@@ -46,7 +47,9 @@ parking::parking()
 void parking::LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
     rangesPtr = &(msg->ranges)[0];
-	for (int i = 1; i <= 719; i++)
+	laenge = static_cast<int>((fabs(msg->angle_min)+fabs(msg->angle_max))/fabs(msg->angle_increment));
+	range_array_back[0] = laenge;
+	for (int i = 1; i <= 510; i++)
 	{
 		range_array_back[i] = msg->ranges[i];
 	}
@@ -56,7 +59,9 @@ void parking::LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 void parking::LaserFrontCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
     rangesPtr = &(msg->ranges)[0];
-	for (int i = 1; i <= 719; i++)
+	laenge = static_cast<int>((fabs(msg->angle_min)+fabs(msg->angle_max))/fabs(msg->angle_increment));
+	range_array_front[0] = laenge;
+	for (int i = 1; i <= laenge; i++)
 	{
 		range_array_front[i] = msg->ranges[i];
 	}
@@ -84,7 +89,6 @@ void parking::wiiCommunicationCallback(const std_msgs::Int16MultiArray::ConstPtr
 void parking::OrientationCallback(const sensor_msgs::Imu::ConstPtr& msg)
 {
 
-// Quaternion noch normalisieren - hat sonst einen steigenden offset drin!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	orientation = msg->orientation.w;
 }
 

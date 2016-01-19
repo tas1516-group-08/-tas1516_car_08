@@ -71,20 +71,23 @@ int main(int argc, char** argv)
 					einparken.start2 = false;
 					start_orientation = einparken.orientation;
 
-					
-						einparken.cmd_parking.linear.x = -0.20;
-						einparken.cmd_parking.angular.z = 0.0;
-						set_cmd_vel(einparken.cmd_parking, &einparken);
-						sleep(1);
 						einparken.cmd_parking.linear.x = 0.0;
 						einparken.cmd_parking.angular.z = 0.0;
 						set_cmd_vel(einparken.cmd_parking, &einparken);
-						sleep(1);
+						usleep(500000);
 					if (ein_aus_parken == 0){
 						einparken.cmd_parking.linear.x = -0.20;
 						einparken.cmd_parking.angular.z = 0.0;
 						set_cmd_vel(einparken.cmd_parking, &einparken);
-						usleep(550000);
+						usleep(500000);
+						einparken.cmd_parking.linear.x = 0.0;
+						einparken.cmd_parking.angular.z = 0.0;
+						set_cmd_vel(einparken.cmd_parking, &einparken);
+						usleep(500000);
+						einparken.cmd_parking.linear.x = -0.20;
+						einparken.cmd_parking.angular.z = 0.0;
+						set_cmd_vel(einparken.cmd_parking, &einparken);
+						usleep(800000);
 					}
 					ROS_INFO("Start orientation = %f", start_orientation);
 /*
@@ -107,7 +110,6 @@ int main(int argc, char** argv)
 }
 
 // Hier wird das Auto hinter die Parklücke gefahren um für den Einparkvorgang richtig zu stehen.
-// !!!!!!! Contribution könnte sein: das Auto auch noch ausrichten, falls es etwas schief steht!!!!!!!!!!! - Dafür: vorne und hinten edges detektieren, wenn gerade zwischen Parklückenbegrenzung mit seitlichen Lasern ausrichten!!!!!!!!!!!!
 int Start_parking(parking *einparken){
 
 // Fahre vorwärts - möglichst früh ausführen, damit sich laser back/front auch ändert und in ein array geschrieben wird. 
@@ -122,20 +124,22 @@ int Start_parking(parking *einparken){
     
 // Lese winkel hinten links/rechts, um die Ecken der Parklücke zu finden
 	if (side == 0 || side == 1){ angle_new_l = lese_winkel( 1, 1, 2, einparken); } // Linke Seite hinten auslesen.
-	if (side == 0 || side == -1){ angle_new_r = lese_winkel( 1, 168, 2, einparken); } // Rechte Seite hinten auslesen.
-
-//ROS_INFO("links1: %f", angle_new_l );
-//ROS_INFO("rechts1: %f", angle_new_r );
-
-// Wenn die Abstände zu groß sind, ignoriere sie. Das sind Störungen weit weg der Parklücke.
 	if (angle_new_l > 0.7 )
 	{
-		angle_new_l = 0;
+		angle_new_l = angle_old_l;
 	}
+
+//ROS_INFO("links1: %f", angle_new_l );
+	if (side == 0 || side == -1){ angle_new_r = lese_winkel( 1, 178, 2, einparken); } // Rechte Seite hinten auslesen.
+
+// Wenn die Abstände zu groß sind, ignoriere sie. Das sind Störungen weit weg der Parklücke.
+
 	if (angle_new_r > 0.7 )
 	{
-		angle_new_r = 0;
+		angle_new_r = angle_old_r;
 	}
+
+//ROS_INFO("rechts1: %f", angle_new_r );
 
 
 // Wenn die gelesenen Abstände sinvolle Werte enthalten und unterschiedlich genug sind, wurde eine Kante detektiert. 
@@ -158,8 +162,8 @@ int Start_parking(parking *einparken){
 		einparken->edge_detector_r[1] = einparken->edge_detector_r[2] + einparken->edge_detector_r[3] + einparken->edge_detector_r[4];
 	}
 
-//ROS_INFO("links: %f", einparken->edge_detector_l[1] );
-//ROS_INFO("rechts: %f", einparken->edge_detector_r[1] );
+//ROS_INFO("links_summe: %f", einparken->edge_detector_l[1] );
+//ROS_INFO("rechts_summe: %f", einparken->edge_detector_r[1] );
 
 	if ((side == 0 || side == 1) && einparken->edge_detector_l[1] > einparken->threshold1 ) // Wenn in den bis zu letzten 3 Zyklen eine Kante links gefunden wurde, die groß genug ist:
 	{
@@ -205,7 +209,7 @@ int parking_procedure(parking *einparken)
 		//LSB
 		car_state += 1 * ((start_orientation - einparken->orientation) < 0.04 && (start_orientation - einparken->orientation) > -0.04); // 0 = Auto steht schief;  1 = Auto steht gerade
 		car_state += 2 * (fabs(start_orientation - einparken->orientation) < 0.43 && fabs(start_orientation - einparken->orientation) > 0.36); // 0 = Auto steht schief; 1 = Auto steht im 45° Winkel
-		car_state += 4 * ((lese_winkel( 1, 40, 10, einparken) + lese_winkel( 0, 130, 10, einparken)) < 0.8); // 0 = außerhalb Parklücke; 1 = innerhalb Parklücke
+		car_state += 4 * ((lese_winkel( 1, 40, 10, einparken) + lese_winkel( 0, 130, 10, einparken)) < 1.0); // 0 = außerhalb Parklücke; 1 = innerhalb Parklücke
 		car_state += 8 * (lese_winkel( 1, 25, 40, einparken) < 0.65); // 0 = weit weg von der Wand; 1 = nahe der Wand
 		car_state += 16 * (lese_winkel(1, 50, 5, einparken)/lese_winkel( 0, 125, 5, einparken) > 0.84 && lese_winkel( 1, 50, 5, einparken)/lese_winkel( 0, 125, 5, einparken) < 1.3); // 0 = Abstand vorne != Abstand hinten; 1 = Abstand vorne = Abstand hinten
 		//MSB
@@ -215,8 +219,8 @@ int parking_procedure(parking *einparken)
 		//LSB
 		car_state += 1 * ((start_orientation - einparken->orientation) < 0.04 && (start_orientation - einparken->orientation) > -0.04); // 0 = Auto steht schief;  1 = Auto steht gerade
 		car_state += 2 * (fabs(start_orientation - einparken->orientation) < 0.43 && fabs(start_orientation - einparken->orientation) > 0.36); // 0 = Auto steht schief; 1 = Auto steht im 45° Winkel
-		car_state += 4 * ((lese_winkel( 0, 40, 10, einparken) + lese_winkel( 1, 130, 10, einparken)) < 0.8); // 0 = außerhalb Parklücke; 1 = innerhalb Parklücke
-		car_state += 8 * (lese_winkel( 1, 115, 40, einparken) < 0.8); // 0 = weit weg von der Wand; 1 = nahe der Wand
+		car_state += 4 * ((lese_winkel( 0, 40, 10, einparken) + lese_winkel( 1, 130, 10, einparken)) < 1.0); // 0 = außerhalb Parklücke; 1 = innerhalb Parklücke
+		car_state += 8 * (lese_winkel( 1, 115, 40, einparken) < 0.65); // 0 = weit weg von der Wand; 1 = nahe der Wand
 		car_state += 16 * (lese_winkel(1, 125, 5, einparken)/lese_winkel( 0, 50, 5, einparken) > 0.84 && lese_winkel( 1, 125, 5, einparken)/lese_winkel( 0, 50, 5, einparken) < 1.3); // 0 = Abstand vorne != Abstand hinten; 1 = Abstand vorne = Abstand hinten
 		//MSB
 	}
@@ -226,17 +230,17 @@ ROS_INFO("CAR_STATE = %i", car_state);
 if (side == 1 ) {
 ROS_INFO("orientation = %f", einparken->orientation);
 ROS_INFO("orientation_diff = %f", start_orientation - einparken->orientation);
-ROS_INFO("ranges 1-20 + 140-160 = %f",lese_winkel( 0, 40, 10, einparken) + lese_winkel( 1, 110, 10, einparken) );
+ROS_INFO("ranges 1-20 + 140-160 = %f",lese_winkel( 1, 40, 10, einparken) + lese_winkel( 0, 130, 10, einparken) );
 ROS_INFO("back 45° = %f", lese_winkel( 1, 25, 40, einparken));
-ROS_INFO("back/front links = %f", lese_winkel( 1, 50, 5, einparken)/lese_winkel( 0, 105, 5, einparken));
+ROS_INFO("back/front links = %f", lese_winkel( 1, 50, 5, einparken)/lese_winkel( 0, 125, 5, einparken));
 }
 // rechts
 if (side == -1 ) {
 ROS_INFO("orientation = %f", einparken->orientation);
 ROS_INFO("orientation_diff = %f", start_orientation - einparken->orientation);
-ROS_INFO("ranges 1-20 + 140-160 = %f",lese_winkel( 0, 40, 10, einparken) + lese_winkel( 1, 110, 10, einparken) );
+ROS_INFO("ranges 1-20 + 140-160 = %f",lese_winkel( 0, 40, 10, einparken) + lese_winkel( 1, 130, 10, einparken) );
 ROS_INFO("back 45° = %f", lese_winkel( 0, 95, 40, einparken));
-ROS_INFO("back/front rechts = %f", lese_winkel( 1, 105, 5, einparken)/lese_winkel( 0, 50, 5, einparken));
+ROS_INFO("back/front rechts = %f", lese_winkel( 1, 125, 5, einparken)/lese_winkel( 0, 50, 5, einparken));
 }
 
 
@@ -255,11 +259,6 @@ ROS_INFO("back/front rechts = %f", lese_winkel( 1, 105, 5, einparken)/lese_winke
 			angle_old = einparken->cmd_parking.angular.z;
 			//set_cmd_vel(einparken->cmd_parking, einparken); 
 
-			/* alt 4.1.16
-			einparken->cmd_parking.linear.x = -0.20;
-			einparken->cmd_parking.angular.z = -1.5 * side;
-			set_cmd_vel(einparken->cmd_parking, einparken); 
-			*/
 		break;
 		// Das Auto steht im 45° Winkel noch außerhalb der Parklücke und noch weit weg von der Wand. -> Fahre geradeaus Richtung Wand.
 		case 2: // 00010
@@ -270,11 +269,6 @@ ROS_INFO("back/front rechts = %f", lese_winkel( 1, 105, 5, einparken)/lese_winke
 			angle_old = einparken->cmd_parking.angular.z;
 			//set_cmd_vel(einparken->cmd_parking, einparken);	
 
-			/* alt 4.1.16
-			einparken->cmd_parking.linear.x = -0.20;
-			einparken->cmd_parking.angular.z = 0;
-			set_cmd_vel(einparken->cmd_parking, einparken);	
-			*/
 		break;
 		// Das Auto steht nahe an der Wand im 45° Winkel halb in der Parklücke. 
 		case 8: case 10: case 14: // 01000,     01010, 01110 - Diese states können, wenn nötig noch erweitert werden.
@@ -290,23 +284,18 @@ ROS_INFO("back/front rechts = %f", lese_winkel( 1, 105, 5, einparken)/lese_winke
 			angle_old = einparken->cmd_parking.angular.z;
 			//set_cmd_vel(einparken->cmd_parking, einparken);	
 
-			/* alt 4.1.16
-			einparken->cmd_parking.linear.x = -0.10;
-			einparken->cmd_parking.angular.z = 1.5 * side;
-			set_cmd_vel(einparken->cmd_parking, einparken);	
-			*/
 		break;
 		// Das Auto steht gerade irgendwo in der Parklücke:
 		case 4: case 5: case 12: case 13:  // 00100, 00101, 01100, 01101
 
 			if (ein_aus_parken == 0) // Wenn einparken angesagt ist:
 			{
-				if ((lese_winkel( 1, 60, 5, einparken)/lese_winkel( 0, 95, 5, einparken) < 0.9 && side == 1) || (lese_winkel( 1, 95, 5, einparken)/lese_winkel( 0, 60, 5, einparken) < 0.9 && side == -1 )) // Wenn Auto zu weit hinten steht:
+				if ((lese_winkel( 1, 50, 5, einparken)/lese_winkel( 0, 125, 5, einparken) < 0.9 && side == 1) || (lese_winkel( 1, 125, 5, einparken)/lese_winkel( 0, 50, 5, einparken) < 0.9 && side == -1 )) // Wenn Auto zu weit hinten steht:
 				{
 					einparken->cmd_parking.linear.x = 0.10;
 					velocity_old = einparken->cmd_parking.linear.x;
 				}
-				else if ((lese_winkel( 1, 60, 5, einparken)/lese_winkel( 0, 95, 5, einparken) > 1.1 && side == 1) || (lese_winkel( 1, 95, 5, einparken)/lese_winkel( 0, 60, 5, einparken) > 1.1 && side == -1 )) // Wenn Auto zu weit vorne steht:
+				else if ((lese_winkel( 1, 50, 5, einparken)/lese_winkel( 0, 125, 5, einparken) > 1.1 && side == 1) || (lese_winkel( 1, 125, 5, einparken)/lese_winkel( 0, 50, 5, einparken) > 1.1 && side == -1 )) // Wenn Auto zu weit vorne steht:
 				{
 					einparken->cmd_parking.linear.x = -0.10;
 					velocity_old = einparken->cmd_parking.linear.x;
@@ -327,7 +316,7 @@ ROS_INFO("back/front rechts = %f", lese_winkel( 1, 105, 5, einparken)/lese_winke
 		case 21: case 29: // 10101, 11101
 			if (ein_aus_parken == 1)
 			{
-				if ((lese_winkel( 1, 60, 5, einparken)/lese_winkel( 0, 95, 5, einparken) > 0.8 && side == 1) || (lese_winkel( 1, 95, 5, einparken)/lese_winkel( 0, 60, 5, einparken) > 0.8 && side == -1 )) // Wenn Auto zu weit vorne steht:
+				if ((lese_winkel( 1, 60, 5, einparken)/lese_winkel( 0, 115, 5, einparken) > 0.8 && side == 1) || (lese_winkel( 1, 115, 5, einparken)/lese_winkel( 0, 60, 5, einparken) > 0.8 && side == -1 )) // Wenn Auto zu weit vorne steht:
 				{
 					einparken->cmd_parking.linear.x = -0.2 * ein_aus_parken;
 					velocity_old = einparken->cmd_parking.linear.x;
@@ -352,64 +341,6 @@ ROS_INFO("back/front rechts = %f", lese_winkel( 1, 105, 5, einparken)/lese_winke
 
 	set_cmd_vel(einparken->cmd_parking, einparken);	
 
-// alte variante auf's Auto angepasst. Hat auch schon funktioniert. 22.12.15.
-/*
-//ROS_INFO("fang lenken an");
-	if (lese_winkel( einparken->range_array_back, 1, 50) > 0.55 && einparken->fortschritt < 1)
-	{
-ROS_INFO("1. range_array_back[1-50] = %f", lese_winkel( einparken->range_array_back, 1, 50));
-		einparken->cmd_parking.linear.x = -0.20;
-		einparken->cmd_parking.angular.z = -1.5;
-		set_cmd_vel(einparken->cmd_parking, einparken);	
-
-ROS_INFO("1. 1-3 = %f", einparken->range_array_front[320]/einparken->range_array_front[328]);
-ROS_INFO("1. 1-5 = %f", einparken->range_array_front[320]/einparken->range_array_front[336]);	
-	}
-    else if ((fabs(start_orientation/einparken->orientation) < 0.95 || fabs(start_orientation/einparken->orientation) > 1.05 ) && einparken->fortschritt <2)
-	{
-		einparken->fortschritt = 1;
-
-//ROS_INFO("2. 1-3 = %f", einparken->range_array_front[320]/einparken->range_array_front[328]);
-//ROS_INFO("2. 1-5 = %f", einparken->range_array_front[320]/einparken->range_array_front[336]);
-
-		einparken->cmd_parking.linear.x = -0.10;
-		einparken->cmd_parking.angular.z = 1.5;
-		set_cmd_vel(einparken->cmd_parking, einparken);	
-	}
-	else if (lese_winkel( einparken->range_array_back, 70, 10) > 0.3 && einparken->fortschritt <3)
-	{
-	einparken->fortschritt = 2;
-ROS_INFO("3. back[1-5]/front[1-5] = %f", fabs(lese_winkel( einparken->range_array_back, 1, 2)-lese_winkel( einparken->range_array_front, 158, 2)));
-ROS_INFO("3. back[30-35]/front[30-35] = %f", fabs(lese_winkel( einparken->range_array_back, 78, 2)-lese_winkel( einparken->range_array_front, 80, 2)));
-
-ROS_INFO("3. range_array_back[300-310] = %f", lese_winkel( einparken->range_array_back, 70, 10) );
-		einparken->cmd_parking.linear.x = -0.10;
-		einparken->cmd_parking.angular.z = 0.0;
-		set_cmd_vel(einparken->cmd_parking, einparken);	
-	}
-	else if (lese_winkel( einparken->range_array_back, 50, 10)/lese_winkel( einparken->range_array_front, 100, 10) < 0.9 && einparken->fortschritt <4)
-	{
-	einparken->fortschritt = 3;
-ROS_INFO("4. back = %f", lese_winkel( einparken->range_array_back, 70, 10));
-ROS_INFO("4. front = %f", lese_winkel( einparken->range_array_front, 80, 10));
-ROS_INFO("4. back/front = %f", lese_winkel( einparken->range_array_back, 70, 10)/lese_winkel( einparken->range_array_front, 80, 10) );
-		einparken->cmd_parking.linear.x = 0.10;
-		einparken->cmd_parking.angular.z = 0.0;
-		set_cmd_vel(einparken->cmd_parking, einparken);	
-	}
-	else 
-	{
-	einparken->fortschritt = 4;
-//ROS_INFO("fang lenken an3");
-		einparken->cmd_parking.linear.x = 0.00;
-		einparken->cmd_parking.angular.z = 0.0;
-		set_cmd_vel(einparken->cmd_parking, einparken);		
-	}
-
-	return 1;
-*/
-
-
 }
 
 // Liest einen vorgegeben Winkel (in °) eines Laserscan arrays (vorne = 0, hinten = 1) aus und bildet den Mittelwert.
@@ -418,22 +349,25 @@ float lese_winkel(int array, int winkel_start, int winkel_diff, parking *einpark
 	float winkel_array[722] = {0};
 	if (array == 0)
 	{
-		winkel_array[0] = 719;
-		for (int a = 1; a <= 719; a++){winkel_array[a] = einparken->range_array_front[a];}
+		winkel_array[0] = einparken->range_array_front[0];
+		for (int a = 1; a <= winkel_array[0]; a++) {winkel_array[a] = einparken->range_array_front[a];}
 	}
 	if (array == 1)
 	{
-		winkel_array[0] = 719;
-		for (int a = 1; a <= 719; a++){winkel_array[a] = einparken->range_array_back[a];}
+		winkel_array[0] = einparken->range_array_back[0];
+		for (int a = 1; a <= winkel_array[0]; a++) {winkel_array[a] = einparken->range_array_back[a];}
 	}
     
-	winkel_diff = static_cast<int>(winkel_array[0]/180 * winkel_diff); // conversion from angle to laser scan array steps
-	winkel_start = static_cast<int>(winkel_array[0]/180 * winkel_start); // conversion from angle to laser scan array steps
+	winkel_diff = static_cast<int>(winkel_array[0]/180 * winkel_diff) - static_cast<int>(winkel_array[0]/180) +1 ; // conversion from angle to laser scan array steps
+	winkel_start = static_cast<int>(winkel_array[0]/180 * winkel_start) - static_cast<int>(winkel_array[0]/180) +1; // conversion from angle to laser scan array steps
     float mean_dist = 0.0;
 	int counter = winkel_diff;
 
+	//ROS_INFO("start %i | diff %i | laenge %f ", winkel_start, winkel_diff, winkel_array[0]);
+
+
     for (int i =1; i < winkel_diff; i++){
-		if (isinf(winkel_array[winkel_start + i]) == 0 && isnan(winkel_array[winkel_start + i]) == 0 ) // Wenn Werte keine Infs oder NaNs sind:
+		if (isinf(winkel_array[winkel_start + i]) == 0 && isnan(winkel_array[winkel_start + i]) == 0 && winkel_array[winkel_start + i] < 10 && winkel_array[winkel_start + i] > 0) // Wenn Werte keine Infs oder NaNs und sinnvoll sind:
 		{
 			mean_dist = mean_dist + winkel_array[winkel_start + i];
 		}
@@ -463,4 +397,3 @@ void set_cmd_vel(geometry_msgs::Twist cmd_parking, parking *einparken){
     ros::spinOnce();
 
 }
-

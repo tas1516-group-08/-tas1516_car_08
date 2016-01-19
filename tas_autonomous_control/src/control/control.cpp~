@@ -21,8 +21,8 @@ control::control()
 
 
 	//steering_angle_offset = 80; // Vettel
-	//steering_angle_offset = 80; // Futurama
-	steering_angle_offset = 17; // Gerty
+	steering_angle_offset = -30; // Futurama
+	//steering_angle_offset = 25; // Gerty
 
     nh_.setParam("/Fp_x", Fp_x);
     nh_.setParam("/Fp_y", Fp_y);
