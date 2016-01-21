@@ -13,12 +13,17 @@
   <!-- Set up move base package-->
   <include file="$(find tas)/launch/move_base.launch" />
 
-  <!-- Run rviz 
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find tas)/launch/config/rviz/tas_rviz.rviz" /> -->
+  <!-- Run rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find tas)/launch/config/rviz/tas_rviz.rviz" /> 
 
 
   <!-- Run parking node -->
   <node pkg = "tas_autonomous_control" type="parking_node" name="parking_node" output="screen"/> 
- 
+
+  <!-- Run Transformation from car to faked wall frame -->
+  <node pkg = "simple_navigation_goals" type="transformFrame" name="transformFrame" output="screen"/> 
+
+  <!-- Run Goal node for autonomous driving -->
+  <node pkg = "simple_navigation_goals" type="simple_navigation_goals_node" name="simple_navigation_goals_node" output="screen"/> 
 
 </launch>

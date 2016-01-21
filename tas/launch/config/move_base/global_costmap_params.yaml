@@ -26,4 +26,4 @@ global_costmap:
 
 
   inflation_layer:
-    inflation_radius: 1.25
+    inflation_radius: 0.8

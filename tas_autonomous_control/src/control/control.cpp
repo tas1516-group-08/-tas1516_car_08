@@ -18,10 +18,13 @@ control::control()
 	previous_ServoMsg.y = 1500;
 	
 	// Initial car is Vettel [1], Futurama [2], Gerty [3], Kitt [4]
-	car = 1;
+	car = 2;
 	// Initial additional forward and backward speed
-	add_forward_speed = 0;
+	add_forward_speed = 15;
 	add_backward_speed = 0;
+	add_steering_offset = 0;
+	forward_speed = 1540;
+	backward_speed = 1260;
 
 	// Set parameters on the parameter server
 	nh_.setParam("/Fp_x", Fp_x);
@@ -38,6 +41,8 @@ control::control()
 	nh_.setParam("/add_forward_speed",add_forward_speed);
 	// Additional backward speed
 	nh_.setParam("/add_backward_speed",add_backward_speed);
+	// Additional steering offset
+	nh_.setParam("/add_steering_offset",add_steering_offset);
 
 }
 
@@ -129,14 +134,20 @@ void control::updateParam()
 	{
 		steering_angle_offset = 80;
 		forward_speed = 1540;
-		backward_speed = 1260;
+		backward_speed = 1260;	
+		nh_.setParam("/steering_offset", steering_angle_offset);
+		nh_.setParam("/forward_speed",forward_speed);
+		nh_.setParam("/backward_speed",backward_speed);
 	}
 	// Check if Futurama is used
 	if(nh_.getParam("car",car) && car == 2)
 	{
-		steering_angle_offset = 80;
-		forward_speed = 1540;
+		steering_angle_offset = -20;
+		forward_speed = 1545;
 		backward_speed = 1260;
+		nh_.setParam("/steering_offset", steering_angle_offset);
+		nh_.setParam("/forward_speed",forward_speed);
+		nh_.setParam("/backward_speed",backward_speed);
 	}
 	//Check if Gerty is used
 	if(nh_.getParam("car",car) && car == 3)
@@ -144,6 +155,9 @@ void control::updateParam()
 		steering_angle_offset = 25;
 		forward_speed = 1540;
 		backward_speed = 1260;
+		nh_.setParam("/steering_offset", steering_angle_offset);
+		nh_.setParam("/forward_speed",forward_speed);
+		nh_.setParam("/backward_speed",backward_speed);
 	}
 	//Check if Kitt is used
 	if(nh_.getParam("car",car) && car == 4)
@@ -151,6 +165,9 @@ void control::updateParam()
 		steering_angle_offset = 25;
 		forward_speed = 1540;
 		backward_speed = 1260;
+		nh_.setParam("/steering_offset", steering_angle_offset);
+		nh_.setParam("/forward_speed",forward_speed);
+		nh_.setParam("/backward_speed",backward_speed);
 	}
 
 	// Getting the parameters from the parameter server
@@ -162,4 +179,6 @@ void control::updateParam()
 	nh_.getParam("/backward_speed",backward_speed);
 	nh_.getParam("/add_forward_speed",add_forward_speed);
 	nh_.getParam("/add_backward_speed",add_backward_speed);
+	nh_.getParam("/add_steering_offset",add_steering_offset);
+
 }

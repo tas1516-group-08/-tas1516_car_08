@@ -23,12 +23,12 @@ int main(int argc, char** argv)
 		// Check if Manual Control Mode is active
 		if(autonomous_control.control_Mode.data==0)							
 		{
-			// ROS_INFO("Manually Control!");
+			 //ROS_INFO("Manually Control!");
 		}
 		// Check if Parking Control Mode is active
 		else if(autonomous_control.control_Mode.data==2)					
 		{
-			// ROS_INFO("Parking Control!");
+			 //ROS_INFO("Parking Control!");
 
 			// Check if the desired speed exceeds a minimum value epsilon
 			if(autonomous_control.cmd_linearVelocity>epsilon)				
@@ -55,7 +55,9 @@ int main(int argc, char** argv)
 			
 			//ROS_INFO("Steering gesamt: %f", autonomous_control.control_servo.y);		
 
-			// Publish the control_servo messages			
+			// Publish the control_servo messages			mand.
+
+
 			autonomous_control.control_servo_pub_.publish(autonomous_control.control_servo);
 		}
 		else
@@ -95,14 +97,10 @@ int main(int argc, char** argv)
 					autonomous_control.control_servo.x = 1500;
 				}
 			// Adding the individual steering angle offset to the desired value
-			autonomous_control.control_servo.y = autonomous_control.P_Controller().y + autonomous_control.steering_angle_offset;
-			autonomous_control.control_servo.y = autonomous_control.cmd_steeringAngle + autonomous_control.steering_angle_offset;
+			//autonomous_control.control_servo.y = autonomous_control.P_Controller().y + autonomous_control.steering_angle_offset;
+			autonomous_control.control_servo.y = autonomous_control.cmd_steeringAngle + autonomous_control.steering_angle_offset + autonomous_control.add_steering_offset;
 			}
 
-		//ROS_INFO("cmd_vel = %f", autonomous_control.cmd_linearVelocity);
-		//ROS_INFO("ist_vel = %f", autonomous_control.control_servo.x);
-		ROS_INFO("cmd_angle = %f", autonomous_control.cmd_steeringAngle);
-		ROS_INFO("ist_angle = %f", autonomous_control.control_servo.y);
 
 		// Publish the control_servo messages	
 		autonomous_control.control_servo_pub_.publish(autonomous_control.control_servo);

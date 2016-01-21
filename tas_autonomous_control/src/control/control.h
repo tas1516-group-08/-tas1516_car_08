@@ -40,6 +40,7 @@ public:
 	int backward_speed;
 	int add_forward_speed;
 	int add_backward_speed;
+	int add_steering_offset;
 	
     int Fp_x, Fp_y;
 

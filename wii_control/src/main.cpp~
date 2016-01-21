@@ -13,7 +13,7 @@ int main(int argc, char** argv)
     {
 
         teleop_wii.wii_communication_pub.publish(teleop_wii.wii_state_);
-	teleop_wii.nh_.setParam("WII_BUTTON_B_PRESSED",teleop_wii.b_pressed);
+	nh_.setParam("WII_BUTTON_B_PRESSED",teleop_wii.b_pressed);
 	//ROS_INFO("Debug message!");
         ros::spinOnce();
         loop_rate.sleep();

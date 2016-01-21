@@ -22,8 +22,8 @@ global_costmap:
 
   wall_layer:
     observation_sources: fake_scan
-    fake_scan: {sensor_frame: map, data_type: LaserScan, topic: faked_wall, marking: true, clearing: true}
+    fake_scan: {sensor_frame: fake_wall_frame, data_type: LaserScan, topic: faked_wall, marking: true, clearing: true}
 
 
   inflation_layer:
-    inflation_radius: 0.8
+    inflation_radius: 1.0

@@ -13,7 +13,6 @@ double car_z;
 bool transformRequested = false; // transformRequested = true if the modify_costmap node is preparing to publish a new fake wall
 bool carPositionKnown = false;
 bool initialized = false;
-bool WII_BUTTON_B_PRESSED = false;
 
 void init_transform () {
     bool transformRequested = false;

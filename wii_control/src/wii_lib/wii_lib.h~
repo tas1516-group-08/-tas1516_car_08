@@ -52,8 +52,6 @@ public:
     geometry_msgs::Vector3 servo;
     std_msgs::Int16MultiArray wii_state_;
 
-	bool b_pressed;
-
 private:
     /* subscribe the wii joystick states and send servo messages when it is manual mode*/
     /*outputs: publishes directly to servo to control the car when its under manual control*/

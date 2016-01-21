@@ -13,10 +13,17 @@ wii_lib::wii_lib()
 
     controlMode.data = 0;
     emergencyBrake.data = 1;
+    b_pressed = false;
 }
 
 void wii_lib::wiiStateCallback(const wiimote::State::ConstPtr& wiiState)
 {
+   b_pressed = false;
+    if(wiiState.get()->buttons[WII_BUTTON_B]==1)
+    {
+        b_pressed = true;
+    }
+
     /*check if C button is pressed*/
     if(wiiState.get()->nunchuk_buttons[WII_BUTTON_NUNCHUK_C]==1)
     {
@@ -68,7 +75,7 @@ void wii_lib::wiiStateCallback(const wiimote::State::ConstPtr& wiiState)
 
             if(wiiState.get()->nunchuk_joystick_zeroed[1]>=0)
             {
-                SCALE_FAKTOR_THROTTLE = 50; 	/*scale factor for driving forward*/
+                SCALE_FAKTOR_THROTTLE = 100; 	/*scale factor for driving forward*/
             }
             else
             {
