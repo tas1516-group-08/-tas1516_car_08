@@ -1,3 +1,5 @@
+## Contribution of Christopher Zeiser
+
 cmake_minimum_required(VERSION 2.8.3)
 project(tas_autonomous_control)
 
@@ -167,3 +169,5 @@ target_link_libraries(parking_node
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+## Contribution of Christopher Zeiser

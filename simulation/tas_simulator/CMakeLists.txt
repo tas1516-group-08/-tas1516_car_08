@@ -1,16 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(tas_autonomous_control)
+project(tas_simulator)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
-  roscpp
-  std_msgs
-  laser_geometry
-  tf
-)
+find_package(catkin REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -69,7 +63,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   geometry_msgs#   std_msgs
+#   std_msgs  # Or other packages containing msgs
 # )
 
 ###################################
@@ -83,8 +77,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES tas_autonomous_control
-#  CATKIN_DEPENDS geometry_msgs roscpp std_msgs
+#  LIBRARIES tas_simulator
+#  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
 )
 
@@ -95,31 +89,24 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
 
 ## Declare a cpp library
-# add_library(tas_autonomous_control
-#   src/${PROJECT_NAME}/tas_autonomous_control.cpp
+# add_library(tas_simulator
+#   src/${PROJECT_NAME}/tas_simulator.cpp
 # )
 
 ## Declare a cpp executable
-add_executable(tas_autonomous_control_node src/tas_autonomous_control_node.cpp src/control/control.cpp)
-add_executable(parking_node src/parking_control.cpp src/parking/parking.cpp)
+# add_executable(tas_simulator_node src/tas_simulator_node.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(tas_autonomous_control_node tas_autonomous_control_generate_messages_cpp)
+# add_dependencies(tas_simulator_node tas_simulator_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(tas_autonomous_control_node
-  ${catkin_LIBRARIES}
-)
+# target_link_libraries(tas_simulator_node
+#   ${catkin_LIBRARIES}
+# )
 
-target_link_libraries(parking_node
-  ${catkin_LIBRARIES}
-)
 #############
 ## Install ##
 #############
@@ -135,7 +122,7 @@ target_link_libraries(parking_node
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS tas_autonomous_control tas_autonomous_control_node
+# install(TARGETS tas_simulator tas_simulator_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -160,7 +147,7 @@ target_link_libraries(parking_node
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_tas_autonomous_control.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_tas_simulator.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
