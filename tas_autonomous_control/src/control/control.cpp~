@@ -142,7 +142,7 @@ void control::updateParam()
 	// Check if Futurama is used
 	if(nh_.getParam("car",car) && car == 2)
 	{
-		steering_angle_offset = 0;
+		steering_angle_offset = -20;
 		forward_speed = 1545;
 		backward_speed = 1260;
 		nh_.setParam("/steering_offset", steering_angle_offset);

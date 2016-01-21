@@ -1,6 +1,6 @@
 plugins: []
 publish_frequency: 1.0
-obstacle_range: 3.0
+obstacle_range: 2.0
 raytrace_range: 2.5
 footprint: [[0.33, 0.22], [0.33, -0.22], [-0.33, -0.22], [-0.33, 0.22]]
 inflation_radius: 1.2

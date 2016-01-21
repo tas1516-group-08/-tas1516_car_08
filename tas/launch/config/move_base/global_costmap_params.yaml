@@ -10,7 +10,7 @@ global_costmap:
   publish_frequency: 10.0
   width: 50
   height: 50
-  static_map: true
+  static_map: false #true
   rolling_window: false
   transform_tolerance: 0.2 #500
   resolution: 0.05
@@ -26,4 +26,5 @@ global_costmap:
 
 
   inflation_layer:
-    inflation_radius: 0.8
+    inflation_radius: 1.0
+    cost_scaling_factor: 3.0
