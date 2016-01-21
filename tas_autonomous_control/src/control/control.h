@@ -35,7 +35,12 @@ public:
     double odom_steeringAngle;
 
 	int steering_angle_offset; 
-
+	int car;
+	int forward_speed;
+	int backward_speed;
+	int add_forward_speed;
+	int add_backward_speed;
+	
     int Fp_x, Fp_y;
 
     geometry_msgs::Vector3 current_ServoMsg;
