@@ -1,3 +1,5 @@
+// Contribution of Hans Boehme
+
 #ifndef CONTROL_H
 #define CONTROL_H
 
