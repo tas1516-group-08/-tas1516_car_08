@@ -1,6 +1,4 @@
-/**
- * This node sends fixed goals to move base via ROS Action API and receives feedback via callback functions.
- */
+// Contribution of David Full
 
 #include <iostream>
 #include <ros/ros.h>
@@ -14,12 +12,20 @@
 #include <math.h>
 #include <unistd.h>
 
+/* This node sends the goals (needed to accomplish task 1):
+ *      1. Waits until wall has been published
+ *      2. Sets goal directly behind the car (and the faked wall)
+ *      3. Requests the removal of the faked wall
+ *      4. Slightly corrects the goal (from one meter behind the starting position to the starting position) when the robot approaches the goal one meter behind its starting position
+ *      5. If there are still laps to go (see variable "lapsToGo"), a faked wall is requested and it is continued with 1.
+ *
+ */
+
+
 using namespace std;
 
 typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
-
-// global variables
 
 // current position of the car
 double car_x;
@@ -33,25 +39,22 @@ double start_y;
 double start_w;
 double start_z;
 
-//bool position_known = false;
-//bool wall_published = 0;
+float distToGoal = 0; // distance from the car to the (next) goal
 
-float distToGoal = 0;
-int lapsToGo = 3; // How many laps the car should do
-int lapsCounter = 0;
+int lapsToGo = 3; // how many laps the car should do
+int lapsCounter = 0; // number of laps that the car has already completed
 
 std::vector<geometry_msgs::Pose> waypoints; // vector of goals, with position and orientation
 
-bool moveInGoalDirection = false;
-bool cleared = false;
-bool wall_published = false;
-bool goal_active = false;
-bool moveToGoal = false;
-bool carPositionKnown = false;
-bool startPosKnown = false;
-bool transformationRequested = false;
-bool initialized = false;
-bool WII_BUTTON_B_PRESSED = false;
+bool moveInGoalDirection = false; // moveInGoalDirection == false at the beginning since the car shall at first move away from its starting (final goal) position
+bool removed = false; // removed == true if faked wall has been removed
+bool wall_published = false; // wall_published == true if the faked laser scan has been published
+bool goal_active = false; // goal_active == true if a goal is currently active
+bool moveToGoal = false; // moveToGoal == true if the robot is approaching the starting position (final goal)
+bool carPositionKnown = false; // carPositionKnown == true if the position of the car is known (relative to the map)
+bool startPosKnown = false; // startPosKnown == true if the starting position of the car is known (relative to the map)
+bool initialized = false; // initialized == true if variables have been initialized
+bool WII_BUTTON_B_PRESSED = false; // WII_BUTTON_B_PRESSED == true if the B-Button is currently pressed
 
 // function declarations
 float calculateDistanceToGoal(float c_x, float c_y, float g_x, float g_y);
@@ -76,7 +79,9 @@ void activeCb() {
  * Callback function, called every time feedback is received for the goal
  */
 void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback) {
+
     // update current position of the car
+
     float x = feedback->base_position.pose.position.x;
     float y = feedback->base_position.pose.position.y;
     float w = feedback->base_position.pose.orientation.w;
@@ -86,26 +91,31 @@ void feedbackCb(const move_base_msgs::MoveBaseFeedbackConstPtr& feedback) {
 }
 
 void updateParameters(ros::NodeHandle n) {
+
+    // update/set the starting position of the robot
+
     if (n.getParam("start_car_x", start_x) && n.getParam("start_car_y", start_y) && n.getParam("start_car_z", start_z) && n.getParam("start_car_w", start_w)) {
+
         startPosKnown = true;
     }
 }
 
 
 float calculateDistanceToGoal(float c_x, float c_y, float g_x, float g_y) {
+
     // calculate euklidian distance from the position (c_x, c_y) to (g_x, g_y)
+
     return sqrt(pow((c_x-g_x),2) + pow((c_y-g_y),2));;
 }
 
-void init_simple_navigation_goals(ros::NodeHandle n) {
+void init_simple_navigation_goals(ros::NodeHandle n) { // initialize parameters
     moveInGoalDirection = false;
-    cleared = false;
+    removed = false;
     wall_published = false;
     goal_active = false;
     moveToGoal = false;
     carPositionKnown = false;
     startPosKnown = false;
-    transformationRequested = false;
     
     // request a fake wall
     n.setParam("request_fake_laser", true);
@@ -118,29 +128,28 @@ void init_simple_navigation_goals(ros::NodeHandle n) {
  */
 int main(int argc, char** argv){
     ros::init(argc, argv, "simple_navigation_goals"); // init and set name
-    
-    
-    ros::NodeHandle n;
-    ros::Publisher pub = n.advertise<std_msgs::Bool>("request_wall", 50);
-    
+       
+    ros::NodeHandle n;    
     ros::Rate r(5.0);
     
     MoveBaseClient ac("move_base", true);
     
     while (!ac.waitForServer(ros::Duration(5.0))) { // wait for the action server to come up
+
         ROS_INFO("Waiting for the move_base action server to come up");
     }
     
     while(n.ok()){
+
         if (n.getParam("WII_BUTTON_B_PRESSED", WII_BUTTON_B_PRESSED) && WII_BUTTON_B_PRESSED == true) {
+
             init_simple_navigation_goals(n);
 			ac.cancelAllGoals();
             initialized = true;
-
-
         }
         
         if (initialized) {
+
             updateParameters(n);
 
             if (startPosKnown) {
@@ -152,7 +161,6 @@ int main(int argc, char** argv){
                     tf::Matrix3x3 m(q);
                     double roll, pitch, yaw;
                     m.getRPY(roll, pitch, yaw);
-
 
                     move_base_msgs::MoveBaseGoal goal;
                     goal.target_pose.header.frame_id = "map";
@@ -176,22 +184,26 @@ int main(int argc, char** argv){
                     usleep(500000);
 
                     ac.sendGoal(goal, &doneCb, &activeCb, &feedbackCb); // send goal and register callback handler
+
+                    // wait half a second (before removing the wall again) to be sure that the goal is sent
                     usleep(500000);
 
                     // remove wall
                     n.setParam("wall", false);
                     n.setParam("request_fake_laser", true);
 			
-		    usleep(500000);
+                    // wait a second to be sure that the wall has been removed
+                    usleep(1000000);
+
                     n.setParam("request_fake_laser", false);
                 }
 
                 if (distToGoal > 10 && moveInGoalDirection==false) {
+
                     moveInGoalDirection = true;
                 }
 
                 if (distToGoal < 8 && moveInGoalDirection) {
-
 
 
                     // go to the initial starting position
@@ -213,7 +225,7 @@ int main(int argc, char** argv){
                     goal.target_pose.pose = waypoint1;
                     ROS_INFO("Sending goal");
 
-                    if (n.getParam("cleared", cleared) && cleared == true) { // if fake wall has been cleared -> set new goal
+                    if (n.getParam("removed", removed) && removed == true) { // if fake wall has been removed -> set new goal
                         ac.sendGoal(goal, &doneCb, &activeCb, &feedbackCb); // send goal and register callback handler
                         moveInGoalDirection = false;
                         moveToGoal = true;
@@ -223,7 +235,7 @@ int main(int argc, char** argv){
 
                 }
 
-                // if goal has been reached set a new goal if there are still laps to go
+                // if goal has been reached, set a new goal (if there are still laps to go)
                 if (goal_active && moveToGoal &&  lapsCounter+1 < lapsToGo && ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED) {
                     lapsCounter++;
                     moveToGoal = false;

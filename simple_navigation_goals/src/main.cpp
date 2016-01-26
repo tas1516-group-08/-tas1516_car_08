@@ -180,20 +180,20 @@ int main(int argc, char** argv){
                     goal.target_pose.pose = waypoint1;
                     ROS_INFO("Sending 'help goal'");
 
-                    // wait half a second (before sending the goal) to be sure that the fake wall is in the costmap
-                    usleep(500000);
+                    // wait half 0.4s (before sending the goal) to be sure that the fake wall is in the costmap
+                    usleep(400000);
 
                     ac.sendGoal(goal, &doneCb, &activeCb, &feedbackCb); // send goal and register callback handler
 
-                    // wait half a second (before removing the wall again) to be sure that the goal is sent
-                    usleep(500000);
+                    // wait 0.4s (before removing the wall again) to be sure that the goal is sent
+                    usleep(400000);
 
                     // remove wall
                     n.setParam("wall", false);
                     n.setParam("request_fake_laser", true);
 			
                     // wait a second to be sure that the wall has been removed
-                    usleep(1000000);
+                    usleep(500000);
 
                     n.setParam("request_fake_laser", false);
                 }

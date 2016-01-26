@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib
   move_base_msgs
   roscpp
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -106,6 +107,7 @@ include_directories(
 add_executable(simple_navigation_goals_node src/main.cpp)
 add_executable(init_start_pos src/init_start_pos.cpp)
 add_executable(modify_glCostmap src/modify_costmap.cpp)
+add_executable(transformFrame src/transformFrames.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -121,6 +123,10 @@ target_link_libraries(init_start_pos
 )
 
 target_link_libraries(modify_glCostmap
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(transformFrame
   ${catkin_LIBRARIES}
 )
 
