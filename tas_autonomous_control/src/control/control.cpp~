@@ -76,13 +76,13 @@ void control::cmdCallback(const geometry_msgs::Twist::ConstPtr& msg)
 
 	cmd_steeringAngle = 1500 + 500/30*cmd_steeringAngle;
 
-	if(cmd_steeringAngle > 2000)
+	if(cmd_steeringAngle > 2000 - steering_angle_offset)
 	{
-		cmd_steeringAngle = 2000;
+		cmd_steeringAngle = 2000 - steering_angle_offset;
 	}
-	else if(cmd_steeringAngle < 1000)
+	else if(cmd_steeringAngle < 1000 - steering_angle_offset)
 	{
-		cmd_steeringAngle = 1000;
+		cmd_steeringAngle = 1000 - steering_angle_offset;
 	}
 }
 
@@ -142,7 +142,7 @@ void control::updateParam()
 	// Check if Futurama is used
 	if(nh_.getParam("car",car) && car == 2)
 	{
-		steering_angle_offset = -20;
+		steering_angle_offset = -35;
 		forward_speed = 1545;
 		backward_speed = 1260;
 		nh_.setParam("/steering_offset", steering_angle_offset);

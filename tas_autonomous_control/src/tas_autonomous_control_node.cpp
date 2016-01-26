@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 			else
 			{
 				// Stop the car
-				autonomous_control.control_servo.x = 1500;					
+				autonomous_control.control_servo.x = 1500;		
 			}
 
 			//ROS_INFO("Steering: %i", autonomous_control.steering_angle_offset);
