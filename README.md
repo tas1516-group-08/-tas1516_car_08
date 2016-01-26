@@ -11,6 +11,7 @@ This repository has two branches: master and simulation.
 Branch "master":
 
 	Task 1: 
+	
 	1. To record a map (using hector mapping and starting the hardware and odom node):
 		- `roslaunch tas run1.launch`
 	2. Complete the lap.
@@ -33,6 +34,7 @@ Branch "master":
 		- `rosparam set add_steering_offset z`
 
 	Task 2:
+	
 	1. Run step 5 and 6 of Task 1 if not already done.
 	2. Place car as described in task description for parallel parking.
 	3. Press and hold A-Button on wii-mote until the car has reached its final parking position.
