@@ -17,7 +17,7 @@ TrajectoryPlannerROS:
   xy_goal_tolerance: 0.5 #0.5
   yaw_goal_tolerance: 1.5
   goal_distance_bias: 0.2
-  path_distance_bias: 5.0 #0.1 #0.8
+  path_distance_bias: 0.1 #0.8
   occdist_scale: 0.005
   heading_lookahead: 3.0 #0.325
   oscillation_reset_dist: 2 #0.05
@@ -33,5 +33,4 @@ TrajectoryPlannerROS:
   publish_cost_grid_pc: true
   ############
   pdist_scale: 1
-  control_frequency: 10
 

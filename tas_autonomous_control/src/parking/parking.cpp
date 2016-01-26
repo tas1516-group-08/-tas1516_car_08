@@ -1,7 +1,7 @@
-#include "parking.h"
-#include "math.h"
+// Contribution of Christopher Zeiser
 
-int counter2 =0;
+#include "parking.h"
+#include <tf/transform_datatypes.h>
 
 // Kommentar
 parking::parking()
@@ -15,53 +15,44 @@ parking::parking()
 	imu_orientation = n.subscribe<sensor_msgs::Imu>("/imu/data",10, &parking::OrientationCallback, this);
     wii_communication_sub = n.subscribe<std_msgs::Int16MultiArray>("wii_communication",1000,&parking::wiiCommunicationCallback, this);
 
+// variables for car orientation management
 	orientation_tau = 0;
+	orientation = 0;
 
 // Parking control Variablen
     park = false;
 	detect_edge =0;
-	fortschritt =0;
 
-// Threshold paramter - autospezifisch
-	startwinkel1 = 2;
-	winkeldiff1 = 5;
-	threshold1 = 0.08;
-
-// Variablen für bedingte einmalige Aktionen
+// variables for once needed operations
 	start1 = true;
 	start2 = true;
 
-// [0] = {0,1} = found edge recently? ; [1-4] = R+0 = range difference accumulator; 
+// [0] = {0,1} = found edge recently? ; [1] = [2]+[3]+[4] = range difference accumulator ; [2-4] = ranges 
 	for (int a = 0; a < 6; a++){ edge_detector_l[a] = 0; }
 	for (int b = 0; b < 6; b++){ edge_detector_r[b] = 0; }
 
-
-// Parameter für Parameteränderung zur einfachen Parameteroptimierung
-    n.setParam("/startwinkel1", startwinkel1);
-    n.setParam("/winkeldiff1", winkeldiff1);
-    n.setParam("/threshold1", threshold1);
 }
 
 
-// Lese hinteren Laserscanner aus. Von Topic /scan_back
+// Read back laser scans. Topic /scan_back
 void parking::LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
-    rangesPtr = &(msg->ranges)[0];
+	// Sample rate of the sensor (e.g. 720 samples for about 180° laser radius)
 	laenge = static_cast<int>((fabs(msg->angle_min)+fabs(msg->angle_max))/fabs(msg->angle_increment));
 	range_array_back[0] = laenge;
-	for (int i = 1; i <= 510; i++)
+	for (int i = 1; i <= laenge; i++) // Copy all the laser data available
 	{
 		range_array_back[i] = msg->ranges[i];
 	}
 }
 
-// Lese vorderen Laserscanner aus. Von Topic /scan
+// Read front laser scans. Topic /scan
 void parking::LaserFrontCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 {
-    rangesPtr = &(msg->ranges)[0];
+	// Sample rate of the sensor (e.g. 720 samples for about 180° laser radius)
 	laenge = static_cast<int>((fabs(msg->angle_min)+fabs(msg->angle_max))/fabs(msg->angle_increment));
 	range_array_front[0] = laenge;
-	for (int i = 1; i <= laenge; i++)
+	for (int i = 1; i <= laenge; i++) // Copy all the laser data available
 	{
 		range_array_front[i] = msg->ranges[i];
 	}
@@ -71,33 +62,33 @@ void parking::LaserFrontCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 void parking::wiiCommunicationCallback(const std_msgs::Int16MultiArray::ConstPtr& msg)
 {
     control_Mode.data = msg->data[0];
-	if (control_Mode.data == 2) 
-	{ //Parking Control mode active
+	if (control_Mode.data == 2) // If the wii "A" button is pressed:
+	{ 
 		park = true;
 	} 
-	else 
+	else // If the wii "A" button is not pressed:
 	{
 		park = false;
+		// Reset all necessary variables to resat parking procedure.
 		detect_edge =0;
-		fortschritt =0;
 		start1 = true;
 		start2 = true;
 	}
 }
 
-// Callback für Orientierung des Autos über IMU /magnetic Topic. Bildet immer wieder Mittelwerte.
+// Callback for car orinetation imu/magnetic Topic.
 void parking::OrientationCallback(const sensor_msgs::Imu::ConstPtr& msg)
 {
+	//orientation = msg->orientation.w;
 
-	orientation = msg->orientation.w;
+    // transform quaternion to roll pitch yaw
+    tf::Quaternion q(msg->orientation.x, msg->orientation.y, msg->orientation.z, msg->orientation.w);
+    tf::Matrix3x3 m(q);
+    double roll, pitch, yaw;
+    m.getRPY(roll, pitch, yaw);
+	orientation = yaw;
+
+
 }
 
-/*
-// Funktion zur Parameterabfrage von Parameterserver
-void parking::updateParam() {
-    n.getParam("/startwinkel1", startwinkel1);
-    n.getParam("/winkeldiff1", winkeldiff1);
-    n.getParam("/threshold1", threshold1);
-}
-*/
-
+// Contribution of Christopher Zeiser

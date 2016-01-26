@@ -144,7 +144,7 @@ void control::updateParam()
 	{
 		steering_angle_offset = -35;
 		forward_speed = 1545;
-		backward_speed = 1260;
+		backward_speed = 1200;
 		nh_.setParam("/steering_offset", steering_angle_offset);
 		nh_.setParam("/forward_speed",forward_speed);
 		nh_.setParam("/backward_speed",backward_speed);

@@ -1,3 +1,5 @@
+// contribution of Christopher Zeiser
+
 #ifndef PARKING_H
 #define PARKING_H
 
@@ -12,9 +14,8 @@
 
 #define PI                     3.14159265
 #define CAR_LENGTH              0.355
-#define SCALE_FAKTOR_STEERING   500
 
-// Klasse zum Einparken des Autos. 
+// Class for parking controll. 
 class parking
 {
 public:
@@ -25,24 +26,22 @@ public:
 	ros::NodeHandle n;
 
 // Subscriber
-	ros::Subscriber laser_back_sub;
-	ros::Subscriber laser_front_sub;
-	ros::Subscriber wii_communication_sub;
-	ros::Subscriber imu_orientation;
+	ros::Subscriber laser_back_sub;         // subscribe for car position and control
+	ros::Subscriber laser_front_sub;        // subscribe for car position and control
+	ros::Subscriber wii_communication_sub;  // subscribe for starting on "A"-button
+	ros::Subscriber imu_orientation;        // subscribe for car orientation and control
 
 //Publisher
-	ros::Publisher cmd_parking_pub;
+	ros::Publisher cmd_parking_pub;         // publish velocity and steering commands 
 
-// Variablen
+// Variables
 	std_msgs::Int16 control_Mode;
 	geometry_msgs::Twist cmd_parking;
 
-	const float *rangesPtr;
-	float range_array_back[722];
-	float range_array_front[722];
+	float range_array_back[722];            // 722 is a maximum sample rate of all tested laser scanners
+	float range_array_front[722];           // 722 is a maximum sample rate of all tested laser scanners
 
-	bool park;
-	int fortschritt;
+	bool park;                              // variable to (de-)activate parking 
 
 	int detect_edge;
 
@@ -53,15 +52,15 @@ public:
 
 	float orientation, orientation_tau;
 
-	int startwinkel1, winkeldiff1;
-	float threshold1;
+	float laenge;
 
-// Funktion-predeklaration
+// Funktion predeklaration
 	void LaserBackCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void LaserFrontCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
 	void wiiCommunicationCallback(const std_msgs::Int16MultiArray::ConstPtr& msg);
 	void OrientationCallback(const sensor_msgs::Imu::ConstPtr& msg);
-	void updateParam();
 
 };
 #endif // PARKING_H
+
+// contribution of Christopher Zeiser
