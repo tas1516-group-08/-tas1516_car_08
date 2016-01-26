@@ -43,10 +43,15 @@ Task 2:
 ===================================================================================================
 Contributions:
 	Christopher Zeiser:
+		- flexible parking (parking on both sides; leaving the parking position)
 	
 	Hans Boehme:
 		- Map saving with shell script
 		- User friendy mode control with wii-mote (A-Button for parking; B-Button for trajectory planning)
-		- 
+		- Parameter adaption at runtime using parameter server
 	
 	David Full:
+		- Reducing the number of waypoints to one -> flexibility
+		- Possible to start at nearly every position in the map
+		- Independent of map shape and size, only low requirements close to the robot
+		- Ability to drive multiple laps
