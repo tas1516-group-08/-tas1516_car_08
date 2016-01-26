@@ -1,3 +1,5 @@
+// Contribution of Hans Boehme
+
 #include "control.h"
 
 control::control()
