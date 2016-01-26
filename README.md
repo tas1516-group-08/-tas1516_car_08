@@ -3,7 +3,7 @@ Group 08: Hans Boehme, Christopher Zeiser, David Full
 =======
 Basic setup for the TAS stack
 
-This repository has two branches: master and simulation.	
+	This repository has two branches: master and simulation.	
 	1. Branch "master": for working on the real car
 	2. Branch "simulation": for working on gazebo simulation
 
