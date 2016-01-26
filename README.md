@@ -42,8 +42,10 @@ Task 2:
 
 ===================================================================================================
 Contributions:
+
 	Christopher Zeiser:
 		- flexible parking (parking on both sides; leaving the parking position)
+		- 
 	
 	Hans Boehme:
 		- Map saving with shell script
