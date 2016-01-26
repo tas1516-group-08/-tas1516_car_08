@@ -1,3 +1,5 @@
+// Contribution of David Full
+
 #include <iostream>
 #include <ros/ros.h>
 #include <move_base_msgs/MoveBaseAction.h>
