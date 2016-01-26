@@ -1,3 +1,5 @@
+// Contribution of David Full
+
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
 #include "std_msgs/UInt8.h"
