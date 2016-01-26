@@ -1,3 +1,5 @@
+// Contribution of Hans Boehme
+
 #include "wii_lib.h"
 
 wii_lib::wii_lib()
@@ -18,10 +20,11 @@ wii_lib::wii_lib()
 
 void wii_lib::wiiStateCallback(const wiimote::State::ConstPtr& wiiState)
 {
-   b_pressed = false;
+    /*check if B button is pressed*/
+    b_pressed = false;
     if(wiiState.get()->buttons[WII_BUTTON_B]==1)
     {
-        b_pressed = true;
+        b_pressed = true;             /*Generating Trajectory*/  
     }
 
     /*check if C button is pressed*/
